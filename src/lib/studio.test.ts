@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { platformModules } from "./navigation";
 import { getCmsExportPackage, getFeaturedOpportunity } from "./studio";
 
 describe("studio helpers", () => {
@@ -17,5 +18,20 @@ describe("studio helpers", () => {
     expect(exportPackage.css).toContain(".campaign-page");
     expect(exportPackage.js).toContain("data-track");
     expect(exportPackage.json.type).toBe("campaign");
+  });
+
+  it("defines a multi-module platform navigation model", () => {
+    expect(platformModules.length).toBeGreaterThanOrEqual(7);
+    expect(platformModules.map((module) => module.href)).toEqual([
+      "/",
+      "/radar",
+      "/evidence",
+      "/strategy",
+      "/campaign",
+      "/rewards",
+      "/export",
+      "/feedback"
+    ]);
+    expect(platformModules.every((module) => module.task.length > 10)).toBe(true);
   });
 });

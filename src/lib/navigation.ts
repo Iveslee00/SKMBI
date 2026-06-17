@@ -61,11 +61,11 @@ export const platformModules: PlatformModule[] = [
 
 export const campaignWorkflowSteps: CampaignWorkflowStep[] = [
   {
-    id: "evidence",
-    href: "/radar#evidence",
-    label: "Evidence",
-    shortLabel: "依據",
-    task: "確認議題的需求來源、品類關聯與商業判斷"
+    id: "insight",
+    href: "/radar#insight",
+    label: "Demand Insight",
+    shortLabel: "洞察",
+    task: "確認議題背後的需求來源、品類關聯與消費者情境"
   },
   {
     id: "strategy",

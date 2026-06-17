@@ -32,7 +32,7 @@ describe("studio helpers", () => {
     expect(platformModules.map((module) => module.shortLabel)).not.toContain("策展依據");
     expect(platformModules.map((module) => module.shortLabel)).not.toContain("策略工作室");
     expect(campaignWorkflowSteps.map((step) => step.shortLabel)).toEqual([
-      "依據",
+      "洞察",
       "策略",
       "A/B",
       "活動頁",

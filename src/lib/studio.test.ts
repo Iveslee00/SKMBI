@@ -6,6 +6,7 @@ import {
   getComparisonVariants,
   getDemoActionLabels,
   getFeaturedOpportunity,
+  getOpportunityById,
   getForecastRows,
   getRankedOpportunities,
   getSavedCampaignProjects
@@ -68,10 +69,19 @@ describe("studio helpers", () => {
 
   it("ranks opportunity rows for the marketing command center", () => {
     const ranked = getRankedOpportunities();
+    const uniqueScores = new Set(ranked.map((opportunity) => opportunity.opportunityScore));
 
     expect(ranked[0].rank).toBe(1);
     expect(ranked[0].opportunityScore).toBeGreaterThanOrEqual(ranked[1].opportunityScore);
+    expect(uniqueScores.size).toBe(ranked.length);
     expect(ranked[0].categoryGroup.length).toBeGreaterThan(0);
+  });
+
+  it("finds a specific opportunity for interactive selection", () => {
+    const opportunity = getOpportunityById("family-summer-outing");
+
+    expect(opportunity.shortTitle).toBe("親子暑假外出補給");
+    expect(opportunity.businessScore).not.toBe(getFeaturedOpportunity().businessScore);
   });
 
   it("returns A/B strategy variants for the selected opportunity", () => {

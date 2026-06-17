@@ -26,16 +26,21 @@ export function getFeaturedOpportunity(): DemandOpportunity {
   );
 }
 
+export function getOpportunityById(opportunityId: string): DemandOpportunity {
+  return demandOpportunities.find((opportunity) => opportunity.id === opportunityId) ?? getFeaturedOpportunity();
+}
+
 export function getRankedOpportunities(): RankedOpportunity[] {
   return demandOpportunities
     .map((opportunity) => ({
       ...opportunity,
       opportunityScore: Math.round(
-        opportunity.momentum * 0.24 +
-          opportunity.businessScore * 0.26 +
-          opportunity.productFit * 0.18 +
-          opportunity.rewardFit * 0.14 +
-          opportunity.crmFit * 0.12 -
+        opportunity.momentum * 0.22 +
+          opportunity.businessScore * 0.32 +
+          opportunity.productFit * 0.16 +
+          opportunity.rewardFit * 0.12 +
+          opportunity.crmFit * 0.1 +
+          opportunity.demandGrowth * 0.08 -
           (opportunity.executionEffort === "高" ? 6 : opportunity.executionEffort === "中" ? 3 : 0)
       )
     }))

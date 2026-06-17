@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DemandSelectionWorkbench } from "./demand-selection-workbench";
 import {
   campaignPageSections,
   campaignStrategies,
@@ -121,7 +122,6 @@ export function DashboardPage() {
 
 export function CreateCampaignPage() {
   const ranked = getRankedOpportunities();
-  const selected = ranked[0];
   const categories = ["全部", ...Array.from(new Set(ranked.map((opportunity) => opportunity.categoryGroup)))];
   const categoryCounts = categories.map((category) =>
     category === "全部" ? ranked.length : ranked.filter((opportunity) => opportunity.categoryGroup === category).length
@@ -136,85 +136,7 @@ export function CreateCampaignPage() {
       showWorkflow
       activeWorkflowStep="select-demand"
     >
-      <div className="create-step-layout">
-        <aside className="module-card filter-rail">
-          <p className="eyebrow">Category Filters</p>
-          <h2>篩選需求</h2>
-          <div className="filter-list">
-            {categories.map((category, index) => (
-              <button className={index === 0 ? "active" : ""} key={category}>
-                <span>{category}</span>
-                <small>{categoryCounts[index]}</small>
-              </button>
-            ))}
-          </div>
-          <div className="filter-summary">
-            <strong>本週排序邏輯</strong>
-            <span>需求熱度 + 商業適配 + 贈獎適配 + CRM 價值 - 執行難度</span>
-          </div>
-        </aside>
-
-        <section className="module-card opportunity-rank-panel" id="select-demand">
-          <div className="module-card-head">
-            <div>
-              <p className="eyebrow">Step 1</p>
-              <h2>選一個有依據的需求</h2>
-              <p className="lead">這一步不是在想活動，而是在確認「為什麼值得做」。看完數據與理由後，再選定要進入方案產生的議題。</p>
-            </div>
-            <Score value={ranked.length} label="議題" />
-          </div>
-          <div className="demand-choice-list">
-            {ranked.map((opportunity) => (
-              <article className={opportunity.id === selected.id ? "selected" : ""} key={opportunity.id}>
-                <div className="choice-main">
-                  <span className="rank-number">{opportunity.rank}</span>
-                  <div>
-                    <strong>{opportunity.shortTitle}</strong>
-                    <small>{opportunity.categoryGroup}</small>
-                    <p>{opportunity.summary}</p>
-                  </div>
-                </div>
-                <div className="choice-meta">
-                  <Metric label="推薦分" value={opportunity.opportunityScore} />
-                  <Metric label="熱度" value={opportunity.momentum} />
-                  <Metric label="頁型" value={opportunity.recommendedOutput} />
-                  <Metric label="難度" value={opportunity.executionEffort} />
-                </div>
-                <div className="action-row">
-                  <Link href="/create/options">選擇並套用假資料</Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="module-card selected-topic-panel">
-          <div className="module-card-head">
-            <div>
-              <p className="eyebrow">Selected Preview</p>
-              <h2>{selected.title}</h2>
-            </div>
-            <Score value={selected.opportunityScore} label="推薦分" />
-          </div>
-          <p className="lead">{selected.summary}</p>
-          <div className="metric-strip">
-            <Metric label="需求熱度" value={selected.momentum} />
-            <Metric label="商品適配" value={selected.productFit} />
-            <Metric label="贈獎適配" value={selected.rewardFit} />
-            <Metric label="CRM 價值" value={selected.crmFit} />
-          </div>
-          <SignalBars opportunity={selected} />
-          <ReasoningList opportunity={selected} />
-          <div className="risk-box">
-            <strong>需要留意</strong>
-            <ul>
-              {selected.risks.map((risk) => (
-                <li key={risk}>{risk}</li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      </div>
+      <DemandSelectionWorkbench ranked={ranked} categories={categories} categoryCounts={categoryCounts} />
     </PlatformShell>
   );
 }

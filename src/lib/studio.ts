@@ -68,6 +68,10 @@ export function getCampaignProposals(opportunityId: string): CampaignProposal[] 
   return campaignProposals.filter((proposal) => proposal.opportunityId === getFeaturedOpportunity().id);
 }
 
+export function getDemoActionLabels(proposal: CampaignProposal): string[] {
+  return proposal.editableFields.map((field) => `套用${field}假資料`);
+}
+
 export function getForecastRows(opportunityId: string): ForecastRow[] {
   const hasProposal = getCampaignProposals(opportunityId).length > 0;
   return hasProposal ? forecastRows : [];

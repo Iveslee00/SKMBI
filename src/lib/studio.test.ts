@@ -4,6 +4,7 @@ import {
   getCampaignProposals,
   getCmsExportPackage,
   getComparisonVariants,
+  getDemoActionLabels,
   getFeaturedOpportunity,
   getForecastRows,
   getRankedOpportunities,
@@ -97,6 +98,14 @@ describe("studio helpers", () => {
     expect(proposals.every((proposal) => proposal.copyDirection.length > 12)).toBe(true);
     expect(proposals.every((proposal) => proposal.rewardIntensity.length > 8)).toBe(true);
     expect(proposals.every((proposal) => proposal.reasoning.length >= 3)).toBe(true);
+  });
+
+  it("builds demo action labels for editable proposal fields", () => {
+    const [proposal] = getCampaignProposals("small-space-cooling");
+    const labels = getDemoActionLabels(proposal);
+
+    expect(labels.length).toBe(proposal.editableFields.length);
+    expect(labels[0]).toMatch(/^套用.+假資料$/);
   });
 
   it("returns detailed forecast rows for the comparison step", () => {

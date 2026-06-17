@@ -1498,6 +1498,62 @@ body {
   gap: 18px;
   padding: 18px;
   background: transparent;
+  transition: grid-template-columns 180ms ease;
+}
+
+.sidebar-state {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebar-toggle {
+  position: fixed;
+  z-index: 30;
+  left: 24px;
+  bottom: 24px;
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow);
+  color: var(--brand-red-dark);
+  cursor: pointer;
+  font-weight: 900;
+  padding: 10px 14px;
+  backdrop-filter: blur(18px);
+}
+
+.sidebar-toggle::before {
+  content: "";
+  width: 16px;
+  height: 12px;
+  border-top: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  box-shadow: inset 0 5px 0 currentColor;
+}
+
+.sidebar-toggle::after {
+  content: "收合";
+}
+
+.app-shell:has(.sidebar-state:checked) {
+  grid-template-columns: 0 minmax(0, 1fr);
+}
+
+.app-shell:has(.sidebar-state:checked) .sidebar {
+  opacity: 0;
+  transform: translateX(-110%);
+  pointer-events: none;
+}
+
+.app-shell:has(.sidebar-state:checked) .sidebar-toggle::after {
+  content: "展開";
 }
 
 .sidebar {
@@ -1509,6 +1565,9 @@ body {
   color: var(--ink);
   box-shadow: var(--shadow);
   backdrop-filter: blur(22px);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
 }
 
 .brand-block > span {
@@ -1544,6 +1603,9 @@ body {
 
 .workspace {
   padding: 0;
+  width: 100%;
+  max-width: 1680px;
+  margin: 0 auto;
 }
 
 .workspace-header,
@@ -1604,6 +1666,7 @@ body {
 .case-workflow nav {
   gap: 8px;
   padding: 10px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
 .case-workflow nav a {
@@ -1663,6 +1726,34 @@ body {
 .filter-list button.active,
 .action-row a:nth-child(2) {
   background: var(--brand-red);
+  color: #fff;
+}
+
+.filter-list button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.filter-list button span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.filter-list button small {
+  display: inline-grid;
+  place-items: center;
+  min-width: 26px;
+  min-height: 26px;
+  border-radius: 999px;
+  background: rgba(215, 25, 32, 0.08);
+  color: var(--brand-red-dark);
+  font-weight: 900;
+}
+
+.filter-list button.active small {
+  background: rgba(255, 255, 255, 0.22);
   color: #fff;
 }
 
@@ -1947,7 +2038,8 @@ pre {
 }
 
 .create-step-layout {
-  grid-template-columns: 230px minmax(420px, 1fr) minmax(360px, 0.85fr);
+  grid-template-columns: 220px minmax(560px, 1.25fr) minmax(380px, 0.9fr);
+  gap: 16px;
 }
 
 .selected-topic-panel {
@@ -1956,6 +2048,48 @@ pre {
 
 .selected-topic-panel .metric-strip {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.opportunity-rank-panel .lead,
+.selected-topic-panel .lead {
+  font-size: 0.96rem;
+  line-height: 1.7;
+}
+
+.demand-choice-list {
+  gap: 14px;
+}
+
+.demand-choice-list article {
+  grid-template-columns: 1fr;
+  gap: 14px;
+  align-items: stretch;
+  padding: 18px;
+}
+
+.choice-main {
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 14px;
+}
+
+.choice-main strong {
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.choice-main p {
+  max-width: 760px;
+  font-size: 0.96rem;
+  line-height: 1.75;
+}
+
+.choice-meta {
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+}
+
+.demand-choice-list .action-row {
+  justify-content: flex-end;
+  margin-top: 0;
 }
 
 .risk-box {
@@ -2052,6 +2186,20 @@ pre {
   padding: 8px 12px;
 }
 
+.demo-state {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: rgba(215, 25, 32, 0.055);
+  color: var(--brand-red-dark);
+}
+
+.demo-state span {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
 .forecast-layout {
   display: grid;
   gap: 14px;
@@ -2130,6 +2278,10 @@ pre {
   .analysis-grid article {
     grid-template-columns: 1fr;
   }
+
+  .workspace {
+    max-width: none;
+  }
 }
 
 @media (max-width: 900px) {
@@ -2139,7 +2291,17 @@ pre {
 
   .proposal-grid,
   .forecast-variant-grid,
-  .proposal-field-grid {
+  .proposal-field-grid,
+  .choice-meta {
     grid-template-columns: 1fr;
+  }
+
+  .app-shell {
+    padding: 10px;
+  }
+
+  .sidebar-toggle {
+    left: 16px;
+    bottom: 16px;
   }
 }

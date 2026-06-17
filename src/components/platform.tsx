@@ -15,6 +15,7 @@ import {
   getCampaignProposals,
   getCmsExportPackage,
   getComparisonVariants,
+  getDemoActionLabels,
   getFeaturedOpportunity,
   getForecastRows,
   getPrimaryStrategy,
@@ -41,6 +42,10 @@ export function PlatformShell({
 }) {
   return (
     <main className="app-shell" id="main-content">
+      <input className="sidebar-state" id="sidebar-state" type="checkbox" aria-label="收合左側選單" />
+      <label className="sidebar-toggle" htmlFor="sidebar-state">
+        <span>選單</span>
+      </label>
       <aside className="sidebar" aria-label="Platform navigation">
         <div className="brand-block">
           <span>CL</span>
@@ -118,6 +123,9 @@ export function CreateCampaignPage() {
   const ranked = getRankedOpportunities();
   const selected = ranked[0];
   const categories = ["全部", ...Array.from(new Set(ranked.map((opportunity) => opportunity.categoryGroup)))];
+  const categoryCounts = categories.map((category) =>
+    category === "全部" ? ranked.length : ranked.filter((opportunity) => opportunity.categoryGroup === category).length
+  );
 
   return (
     <PlatformShell
@@ -135,7 +143,8 @@ export function CreateCampaignPage() {
           <div className="filter-list">
             {categories.map((category, index) => (
               <button className={index === 0 ? "active" : ""} key={category}>
-                {category}
+                <span>{category}</span>
+                <small>{categoryCounts[index]}</small>
               </button>
             ))}
           </div>
@@ -172,7 +181,7 @@ export function CreateCampaignPage() {
                   <Metric label="難度" value={opportunity.executionEffort} />
                 </div>
                 <div className="action-row">
-                  <Link href="/create/options">選擇這個需求</Link>
+                  <Link href="/create/options">選擇並套用假資料</Link>
                 </div>
               </article>
             ))}
@@ -686,6 +695,8 @@ function SavedProjectsTable({ projects }: { projects: SavedCampaignProject[] }) 
 }
 
 function ProposalCard({ proposal }: { proposal: CampaignProposal }) {
+  const demoActionLabels = getDemoActionLabels(proposal);
+
   return (
     <article className="module-card proposal-card">
       <div className="module-card-head">
@@ -716,11 +727,15 @@ function ProposalCard({ proposal }: { proposal: CampaignProposal }) {
       </div>
 
       <div className="edit-chip-row" aria-label="Editable fields">
-        {proposal.editableFields.map((field) => (
-          <button key={field} type="button">
-            編輯{field}
+        {demoActionLabels.map((label) => (
+          <button key={label} type="button">
+            {label}
           </button>
         ))}
+      </div>
+      <div className="demo-state">
+        <strong>Demo 狀態</strong>
+        <span>點擊按鈕時，呈報情境會視為已帶入假資料；正式版再接使用者自行編輯與儲存。</span>
       </div>
     </article>
   );

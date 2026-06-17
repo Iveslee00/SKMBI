@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DemandSelectionWorkbench } from "./demand-selection-workbench";
+import { ProposalEditor } from "./proposal-editor";
 import {
   campaignPageSections,
   campaignStrategies,
@@ -10,13 +11,12 @@ import {
   type DemandOpportunity,
   type SavedCampaignProject
 } from "../data/mockStudio";
-import { campaignWorkflowSteps, platformModules } from "../lib/navigation";
+import { getWorkflowProgress, platformModules } from "../lib/navigation";
 import {
   getBusinessReasoningAverage,
   getCampaignProposals,
   getCmsExportPackage,
   getComparisonVariants,
-  getDemoActionLabels,
   getFeaturedOpportunity,
   getForecastRows,
   getPrimaryStrategy,
@@ -64,6 +64,7 @@ export function PlatformShell({
               href={module.href}
               key={module.href}
             >
+              <i aria-hidden="true" className={`nav-icon ${module.icon}`} />
               <span>{module.shortLabel}</span>
               <small>{module.status}</small>
             </Link>
@@ -90,12 +91,19 @@ export function PlatformShell({
               <strong>建立策展案</strong>
             </div>
             <nav>
-              {campaignWorkflowSteps.map((step) => (
-                <Link className={activeWorkflowStep === step.id ? "active" : ""} href={step.href} key={step.id}>
-                  <span>{step.shortLabel}</span>
-                  <small>{step.task}</small>
-                </Link>
-              ))}
+              {getWorkflowProgress(activeWorkflowStep).map((step) =>
+                step.isClickable ? (
+                  <Link className={step.state} href={step.href} key={step.id}>
+                    <span>{step.shortLabel}</span>
+                    <small>{step.task}</small>
+                  </Link>
+                ) : (
+                  <span aria-current={step.state === "current" ? "step" : undefined} className={step.state} key={step.id}>
+                    <span>{step.shortLabel}</span>
+                    <small>{step.task}</small>
+                  </span>
+                )
+              )}
             </nav>
           </section>
         ) : null}
@@ -201,9 +209,11 @@ export function ForecastComparePage() {
           <p className="lead">這頁的目的不是上線後 A/B test，而是上線前先用 AI 評估哪個方案更有機會打中顧客需求。使用者可以回到上一頁修改文案或贈獎，再重新比較。</p>
           <div className="action-row">
             <Link href="/create/options">回去編輯方案</Link>
-            <Link href="/create/generate">用 B 產生語法</Link>
+            <Link href="/create/select">選定 A/B 方案</Link>
           </div>
         </section>
+
+        <ForecastCharts />
 
         <section className="forecast-variant-grid" id="select-option">
           {variants.map((variant) => (
@@ -218,6 +228,9 @@ export function ForecastComparePage() {
                 <Metric label="難度" value={variant.executionEffort} />
               </div>
               <strong className="forecast-callout">{variant.recommendation}</strong>
+              <div className="action-row">
+                <Link href="/create/select">選擇 {variant.label} 方案</Link>
+              </div>
             </article>
           ))}
         </section>
@@ -242,6 +255,50 @@ export function ForecastComparePage() {
           </div>
         </section>
       </div>
+    </PlatformShell>
+  );
+}
+
+export function SelectOptionPage() {
+  const opportunity = getFeaturedOpportunity();
+  const variants = getComparisonVariants(opportunity.id);
+
+  return (
+    <PlatformShell
+      active="/create"
+      eyebrow="Select Option"
+      title="選定方案"
+      description="Step 4：預估完成後，選定要進入 CMS 語法產生的版本。"
+      showWorkflow
+      activeWorkflowStep="select-option"
+    >
+      <section className="module-card step-context">
+        <div>
+          <p className="eyebrow">Decision</p>
+          <h2>建議選 B，但仍可切換 A/B</h2>
+          <p className="lead">B 版本在需求敘事、活動力度與 CRM 價值上較高；A 可作為基準版本保留。</p>
+        </div>
+        <div className="action-row">
+          <Link href="/create/compare">回到 AI 預估</Link>
+          <Link href="/create/generate">確認並產生語法</Link>
+        </div>
+      </section>
+      <section className="selection-grid">
+        {variants.map((variant) => (
+          <article className={`module-card selection-card ${variant.label === "B" ? "selected" : ""}`} key={variant.label}>
+            <span className="variant-label">{variant.label}</span>
+            <h2>{variant.name}</h2>
+            <p className="lead">{variant.pageAngle}</p>
+            <div className="metric-strip">
+              <Metric label="CTR" value={`+${variant.projectedCtrLift}%`} />
+              <Metric label="CVR" value={`+${variant.projectedCvrLift}%`} />
+              <Metric label="CRM" value={variant.crmValue} />
+              <Metric label="成本" value={variant.marginImpact} />
+            </div>
+            <strong>{variant.label === "B" ? "目前選定" : "保留為備案"}</strong>
+          </article>
+        ))}
+      </section>
     </PlatformShell>
   );
 }
@@ -277,7 +334,7 @@ export function GenerateSyntaxPage() {
             </article>
           </div>
           <div className="action-row">
-            <Link href="/create/compare">回到比較</Link>
+            <Link href="/create/select">回到選定方案</Link>
             <Link href="/export">查看完整 CMS 匯出</Link>
           </div>
         </section>
@@ -616,9 +673,49 @@ function SavedProjectsTable({ projects }: { projects: SavedCampaignProject[] }) 
   );
 }
 
-function ProposalCard({ proposal }: { proposal: CampaignProposal }) {
-  const demoActionLabels = getDemoActionLabels(proposal);
+function ForecastCharts() {
+  const bars = [
+    { label: "文案吸引度", a: 56, b: 88 },
+    { label: "活動力度", a: 62, b: 84 },
+    { label: "商品組合", a: 70, b: 86 },
+    { label: "CRM 價值", a: 62, b: 86 }
+  ];
 
+  return (
+    <section className="forecast-chart-row" aria-label="AI forecast charts">
+      <article className="module-card forecast-chart-card">
+        <p className="eyebrow">Effect Forecast</p>
+        <h2>方案成效預估</h2>
+        <div className="chart-bars">
+          {bars.map((bar) => (
+            <div className="chart-row" key={bar.label}>
+              <strong>{bar.label}</strong>
+              <div>
+                <span style={{ width: `${bar.a}%` }}>A</span>
+              </div>
+              <div>
+                <span className="best" style={{ width: `${bar.b}%` }}>B</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </article>
+      <article className="module-card forecast-chart-card">
+        <p className="eyebrow">Decision Shape</p>
+        <h2>AI 判斷雷達</h2>
+        <div className="radar-chart" aria-label="B 方案雷達圖">
+          <span>需求</span>
+          <span>文案</span>
+          <span>贈獎</span>
+          <span>商品</span>
+          <span>CRM</span>
+        </div>
+      </article>
+    </section>
+  );
+}
+
+function ProposalCard({ proposal }: { proposal: CampaignProposal }) {
   return (
     <article className="module-card proposal-card">
       <div className="module-card-head">
@@ -630,16 +727,7 @@ function ProposalCard({ proposal }: { proposal: CampaignProposal }) {
         <Score value={proposal.label === "B" ? 86 : 62} label="預估" />
       </div>
 
-      <div className="proposal-field-grid">
-        <ProposalField label="頁型" value={proposal.campaignType} />
-        <ProposalField label="目標客群" value={proposal.targetAudience} />
-        <ProposalField label="商品組合" value={proposal.productBundle} editable />
-        <ProposalField label="文案方向" value={proposal.copyDirection} editable />
-        <ProposalField label="贈獎力度" value={proposal.rewardIntensity} editable />
-        <ProposalField label="渠道" value={proposal.channelPlan} editable />
-        <ProposalField label="預估成效" value={proposal.expectedImpact} />
-        <ProposalField label="成本 / 難度" value={`毛利壓力 ${proposal.marginPressure}，執行難度 ${proposal.executionEffort}`} />
-      </div>
+      <ProposalEditor proposal={proposal} />
 
       <div className="proposal-reasoning">
         <strong>AI 產生理由</strong>
@@ -647,28 +735,7 @@ function ProposalCard({ proposal }: { proposal: CampaignProposal }) {
           <p key={reason}>{reason}</p>
         ))}
       </div>
-
-      <div className="edit-chip-row" aria-label="Editable fields">
-        {demoActionLabels.map((label) => (
-          <button key={label} type="button">
-            {label}
-          </button>
-        ))}
-      </div>
-      <div className="demo-state">
-        <strong>Demo 狀態</strong>
-        <span>點擊按鈕時，呈報情境會視為已帶入假資料；正式版再接使用者自行編輯與儲存。</span>
-      </div>
     </article>
-  );
-}
-
-function ProposalField({ label, value, editable = false }: { label: string; value: string; editable?: boolean }) {
-  return (
-    <div className={editable ? "editable" : ""}>
-      <small>{label}</small>
-      <p>{value}</p>
-    </div>
   );
 }
 

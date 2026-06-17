@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { campaignWorkflowSteps, platformModules } from "./navigation";
+import { campaignWorkflowSteps, getWorkflowProgress, platformModules } from "./navigation";
 import {
   getCampaignProposals,
   getCmsExportPackage,
@@ -33,17 +33,11 @@ describe("studio helpers", () => {
   it("separates global workspaces from campaign workflow steps", () => {
     expect(platformModules.map((module) => module.href)).toEqual([
       "/",
-      "/create",
-      "/projects",
-      "/export",
-      "/feedback"
+      "/create"
     ]);
     expect(platformModules.map((module) => module.shortLabel)).toEqual([
       "工作台",
-      "建立策展案",
-      "策展案列表",
-      "CMS 匯出",
-      "成效回流"
+      "建立策展案"
     ]);
     expect(platformModules.map((module) => module.shortLabel)).not.toContain("策展依據");
     expect(platformModules.map((module) => module.shortLabel)).not.toContain("策略工作室");
@@ -56,6 +50,16 @@ describe("studio helpers", () => {
       "成效"
     ]);
     expect(platformModules.every((module) => module.task.length > 10)).toBe(true);
+  });
+
+  it("locks future campaign flow steps while keeping completed steps clickable", () => {
+    const progress = getWorkflowProgress("forecast");
+
+    expect(progress.find((step) => step.id === "edit-options")?.state).toBe("completed");
+    expect(progress.find((step) => step.id === "forecast")?.state).toBe("current");
+    expect(progress.find((step) => step.id === "select-option")?.state).toBe("locked");
+    expect(progress.find((step) => step.id === "edit-options")?.isClickable).toBe(true);
+    expect(progress.find((step) => step.id === "select-option")?.isClickable).toBe(false);
   });
 
   it("keeps the workbench focused on saved campaign projects", () => {

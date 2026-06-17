@@ -4,6 +4,7 @@ export type PlatformModule = {
   shortLabel: string;
   task: string;
   status: "Ready" | "Draft" | "Review";
+  icon: "home" | "create";
 };
 
 export type CampaignWorkflowStep = {
@@ -14,41 +15,27 @@ export type CampaignWorkflowStep = {
   task: string;
 };
 
+export type WorkflowProgressStep = CampaignWorkflowStep & {
+  state: "completed" | "current" | "locked";
+  isClickable: boolean;
+};
+
 export const platformModules: PlatformModule[] = [
   {
     href: "/",
     label: "Command Center",
     shortLabel: "工作台",
     task: "查看目前策展案進度、待辦與近期成效摘要",
-    status: "Ready"
+    status: "Ready",
+    icon: "home"
   },
   {
     href: "/create",
     label: "Create Campaign",
     shortLabel: "建立策展案",
     task: "從顧客需求開始建立一個新的策展案",
-    status: "Ready"
-  },
-  {
-    href: "/projects",
-    label: "My Campaign Projects",
-    shortLabel: "策展案列表",
-    task: "管理進行中、待審核與準備上線的策展案",
-    status: "Ready"
-  },
-  {
-    href: "/export",
-    label: "CMS Export",
-    shortLabel: "CMS 匯出",
-    task: "輸出 HTML、CSS、JS、JSON 與追蹤參數素材包",
-    status: "Review"
-  },
-  {
-    href: "/feedback",
-    label: "Learning Loop",
-    shortLabel: "成效回流",
-    task: "把上線後的假設驗證回流到下一次策展",
-    status: "Review"
+    status: "Ready",
+    icon: "create"
   }
 ];
 
@@ -76,7 +63,7 @@ export const campaignWorkflowSteps: CampaignWorkflowStep[] = [
   },
   {
     id: "select-option",
-    href: "/create/compare#select-option",
+    href: "/create/select",
     label: "Select Option",
     shortLabel: "選定方案",
     task: "選定要產生頁面的策展版本"
@@ -96,3 +83,20 @@ export const campaignWorkflowSteps: CampaignWorkflowStep[] = [
     task: "回收上線後成效並形成下一次策展依據"
   }
 ];
+
+export function getWorkflowProgress(activeStepId = campaignWorkflowSteps[0].id): WorkflowProgressStep[] {
+  const activeIndex = Math.max(
+    campaignWorkflowSteps.findIndex((step) => step.id === activeStepId),
+    0
+  );
+
+  return campaignWorkflowSteps.map((step, index) => {
+    const state = index < activeIndex ? "completed" : index === activeIndex ? "current" : "locked";
+
+    return {
+      ...step,
+      state,
+      isClickable: state === "completed"
+    };
+  });
+}

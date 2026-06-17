@@ -1508,14 +1508,6 @@ body {
   transition: grid-template-columns 180ms ease;
 }
 
-.sidebar-state {
-  position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
-  opacity: 0;
-  pointer-events: none;
-}
-
 .sidebar-toggle {
   position: fixed;
   z-index: 30;
@@ -1569,25 +1561,25 @@ body {
   box-shadow: 0 18px 50px rgba(215, 25, 32, 0.14);
 }
 
-.app-shell:has(.sidebar-state:checked) {
+.app-shell[data-sidebar-collapsed="true"] {
   grid-template-columns: 0 minmax(0, 1fr);
 }
 
-.app-shell:has(.sidebar-state:checked) .sidebar {
+.app-shell[data-sidebar-collapsed="true"] .sidebar {
   opacity: 0;
   transform: translateX(-110%);
   pointer-events: none;
 }
 
-.app-shell:has(.sidebar-state:checked) .sidebar-toggle::after {
+.app-shell[data-sidebar-collapsed="true"] .sidebar-toggle::after {
   content: "";
 }
 
-.app-shell:has(.sidebar-state:checked) .sidebar-toggle {
+.app-shell[data-sidebar-collapsed="true"] .sidebar-toggle {
   left: 28px;
 }
 
-.app-shell:has(.sidebar-state:checked) .sidebar-toggle::before {
+.app-shell[data-sidebar-collapsed="true"] .sidebar-toggle::before {
   transform: rotate(0deg);
 }
 

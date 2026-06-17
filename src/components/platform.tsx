@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { DemandSelectionWorkbench } from "./demand-selection-workbench";
 import { ProposalEditor } from "./proposal-editor";
+import { SidebarShell } from "./sidebar-shell";
 import {
   campaignPageSections,
   campaignStrategies,
@@ -42,11 +43,7 @@ export function PlatformShell({
   children: React.ReactNode;
 }) {
   return (
-    <main className="app-shell" id="main-content">
-      <input className="sidebar-state" id="sidebar-state" type="checkbox" aria-label="收合左側選單" />
-      <label className="sidebar-toggle" htmlFor="sidebar-state">
-        <span>選單</span>
-      </label>
+    <SidebarShell>
       <aside className="sidebar" aria-label="Platform navigation">
         <div className="brand-block">
           <span>CL</span>
@@ -109,7 +106,7 @@ export function PlatformShell({
         ) : null}
         {children}
       </section>
-    </main>
+    </SidebarShell>
   );
 }
 

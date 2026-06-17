@@ -1746,3 +1746,54 @@ pre {
     height: auto;
   }
 }
+
+.workspace-header {
+  grid-template-columns: minmax(0, 1fr) 112px;
+  gap: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 12px 34px rgba(31, 35, 40, 0.055);
+}
+
+.workspace-header > div:first-child {
+  min-height: 104px;
+  padding: 18px 20px;
+}
+
+.workspace-header h1 {
+  margin: 4px 0 6px;
+  font-size: clamp(1.35rem, 2vw, 2rem);
+  line-height: 1.14;
+}
+
+.workspace-header p:last-child {
+  max-width: 680px;
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+.operator-card {
+  min-height: 104px;
+  padding: 14px;
+}
+
+.operator-card span {
+  font-size: 1.65rem;
+}
+
+.operator-card small {
+  font-size: 0.76rem;
+}
+
+.case-workflow {
+  margin-bottom: 12px;
+}
+
+@media (max-width: 760px) {
+  .workspace-header {
+    grid-template-columns: 1fr;
+  }
+
+  .operator-card {
+    min-height: 72px;
+  }
+}

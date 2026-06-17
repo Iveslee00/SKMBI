@@ -99,8 +99,8 @@ export function DashboardPage() {
     <PlatformShell
       active="/"
       eyebrow="Command Center"
-      title="今天有哪些活動值得被策展？"
-      description="行銷端先看跨品類機會排名，點進議題後再看依據、比較 A/B 策略，最後才進入活動頁或贈獎頁產出。"
+      title="策展機會總覽"
+      description="查看跨品類機會排名、選中議題摘要與 A/B 測試方向。"
     >
       <div className="command-layout">
         <aside className="module-card filter-rail">
@@ -218,8 +218,8 @@ export function RadarPage() {
     <PlatformShell
       active="/radar"
       eyebrow="Demand Radar"
-      title="從顧客需求開始，而不是從檔期開始"
-      description="用假資料模擬站內搜尋、外部討論、商品互動與客服問題，把訊號整理成可策展機會。"
+      title="機會雷達"
+      description="查看需求訊號、議題排名與選中議題的洞察依據。"
     >
       <div className="radar-layout">
         <section className="module-card topic-list-panel">
@@ -261,7 +261,7 @@ export function ProjectsPage() {
       active="/projects"
       eyebrow="My Campaign Projects"
       title="我的策展案"
-      description="行銷團隊選定議題後，會在這裡管理策展案狀態、待辦、審核與下一步產出。"
+      description="管理已選定議題、待辦、審核狀態與下一步產出。"
     >
       <div className="project-board">
         <section className="module-card project-summary">
@@ -316,8 +316,8 @@ export function EvidencePage() {
     <PlatformShell
       active="/evidence"
       eyebrow="Evidence Brief"
-      title="這個活動為什麼應該存在？"
-      description="把消費需求、商品適配、贈獎設計與商業判斷拆開來看，避免只靠直覺產生活動。"
+      title="需求洞察"
+      description="查看選中議題的需求來源、商品適配與商業判斷。"
     >
       <div className="app-grid">
         <section className="module-card span-8">
@@ -345,8 +345,8 @@ export function StrategyPage() {
     <PlatformShell
       active="/strategy"
       eyebrow="Strategy Studio"
-      title="從選中議題延伸策略，而不是憑空生成"
-      description={`目前議題：${featured.shortTitle}。先比較 A/B 策略，再決定要產生活動頁、贈獎集合頁或兩者都做。`}
+      title="策略與 A/B"
+      description={`目前議題：${featured.shortTitle}。比較策略版本並決定頁面產出。`}
     >
       <div className="strategy-workspace">
         <section className="module-card strategy-context">
@@ -416,7 +416,7 @@ export function CampaignBuilderPage() {
       active="/campaign"
       eyebrow="Campaign Builder"
       title="活動策展頁產生器"
-      description="把策略轉成一組可被設計、審核與放進 CMS 的頁面區塊。"
+      description="把選定策略轉成 CMS 可用的活動頁區塊。"
     >
       <BuilderPreview type="campaign" />
     </PlatformShell>
@@ -429,7 +429,7 @@ export function RewardBuilderPage() {
       active="/rewards"
       eyebrow="Reward Builder"
       title="贈獎集合頁產生器"
-      description="不是列出所有贈品，而是用生活情境、門檻與會員需求重組贈獎入口。"
+      description="用情境、門檻與會員需求重組贈獎入口。"
     >
       <BuilderPreview type="reward" />
     </PlatformShell>
@@ -442,7 +442,7 @@ export function PageGeneratorPage() {
       active="/builder"
       eyebrow="Page Generator"
       title="頁面產生器"
-      description="行銷先選定策展案，再在同一個工作區產生活動策展頁與贈獎集合頁。"
+      description="產生活動策展頁與贈獎集合頁草稿。"
     >
       <div className="builder-hub">
         <section className="module-card">
@@ -475,7 +475,7 @@ export function ExportPage() {
       active="/export"
       eyebrow="CMS Export"
       title="CMS 素材包"
-      description="把頁面草稿拆成 CMS 可接受的 HTML、CSS、JS 與 JSON，後續再接內部匯入格式。"
+      description="輸出 CMS 可用的 HTML、CSS、JS、JSON 與追蹤資料。"
     >
       <div className="export-grid app-export-grid">
         <CodeBlock title="Campaign HTML" value={campaignExport.html} />
@@ -492,8 +492,8 @@ export function FeedbackPage() {
     <PlatformShell
       active="/feedback"
       eyebrow="Learning Loop"
-      title="讓每一次上線都回到下一次策展"
-      description="用假資料呈現活動上線後如何驗證需求假設、頁面區塊與贈獎影響。"
+      title="成效回流"
+      description="查看上線後假設驗證、頁面區塊表現與下一步建議。"
     >
       <div className="feedback-grid app-feedback-grid">
         {feedbackItems.map((item) => (

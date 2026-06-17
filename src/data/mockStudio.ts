@@ -12,6 +12,12 @@ export type DemandOpportunity = {
   summary: string;
   momentum: number;
   businessScore: number;
+  categoryGroup: string;
+  demandGrowth: number;
+  productFit: number;
+  rewardFit: number;
+  crmFit: number;
+  executionEffort: "低" | "中" | "高";
   recommendedOutput: "活動策展頁" | "贈獎集合頁" | "內容導購";
   categories: string[];
   keywords: string[];
@@ -34,6 +40,20 @@ export type CampaignStrategy = {
   channels: string[];
   hypothesis: string;
   confidence: number;
+};
+
+export type ComparisonVariant = {
+  opportunityId: string;
+  label: "A" | "B";
+  name: string;
+  pageAngle: string;
+  rewardAngle: string;
+  projectedCtrLift: number;
+  projectedCvrLift: number;
+  marginImpact: "低" | "中" | "高";
+  crmValue: number;
+  executionEffort: "低" | "中" | "高";
+  recommendation: string;
 };
 
 export type PageSection = {
@@ -66,6 +86,12 @@ export const demandOpportunities: DemandOpportunity[] = [
       "需求不是單純買冷氣，而是希望在不能施工、預算有限、電費壓力高的空間裡，找到可立即改善夏季悶熱的組合方案。",
     momentum: 92,
     businessScore: 88,
+    categoryGroup: "家電 / 居家",
+    demandGrowth: 31,
+    productFit: 86,
+    rewardFit: 82,
+    crmFit: 84,
+    executionEffort: "中",
     recommendedOutput: "活動策展頁",
     categories: ["家電", "居家", "節能", "夏季生活"],
     keywords: ["免安裝冷氣", "省電風扇", "小房間降溫", "租屋電費", "循環扇推薦"],
@@ -123,6 +149,12 @@ export const demandOpportunities: DemandOpportunity[] = [
     summary: "需求集中在一次買齊出門前準備品，並降低漏買與選品時間。",
     momentum: 84,
     businessScore: 81,
+    categoryGroup: "親子 / 美妝 / 食品",
+    demandGrowth: 24,
+    productFit: 82,
+    rewardFit: 88,
+    crmFit: 91,
+    executionEffort: "低",
     recommendedOutput: "贈獎集合頁",
     categories: ["美妝", "食品", "戶外", "親子"],
     keywords: ["兒童防曬", "補水飲", "出遊清單", "防蚊", "保冷袋"],
@@ -148,6 +180,12 @@ export const demandOpportunities: DemandOpportunity[] = [
     summary: "顧客想降低採買複雜度，需要從寢具、清潔、收納到小家電的完整起手包。",
     momentum: 76,
     businessScore: 79,
+    categoryGroup: "居家 / 清潔 / 收納",
+    demandGrowth: 18,
+    productFit: 84,
+    rewardFit: 76,
+    crmFit: 78,
+    executionEffort: "中",
     recommendedOutput: "活動策展頁",
     categories: ["居家", "清潔", "收納", "小家電"],
     keywords: ["租屋必買", "新鮮人搬家", "收納箱", "床包", "小家電"],
@@ -164,6 +202,61 @@ export const demandOpportunities: DemandOpportunity[] = [
       { label: "商業優先度", score: 80, detail: "有利於新客導入與會員首次購買" }
     ],
     risks: ["需避免清單過長造成選擇疲勞", "配送時效需被清楚標示"]
+  }
+];
+
+export const comparisonVariants: ComparisonVariant[] = [
+  {
+    opportunityId: "small-space-cooling",
+    label: "A",
+    name: "原檔期型家電活動",
+    pageAngle: "夏季冷房家電折扣，主打指定商品與價格。",
+    rewardAngle: "滿額贈一般生活小物。",
+    projectedCtrLift: 3,
+    projectedCvrLift: 1,
+    marginImpact: "中",
+    crmValue: 62,
+    executionEffort: "低",
+    recommendation: "可作為 baseline，但顧客需求敘事不足。"
+  },
+  {
+    opportunityId: "small-space-cooling",
+    label: "B",
+    name: "租屋族免安裝降溫方案",
+    pageAngle: "從不能施工、怕電費、小坪數三個需求切入。",
+    rewardAngle: "滿額送電費折抵券、涼感毯或延長保固。",
+    projectedCtrLift: 18,
+    projectedCvrLift: 7,
+    marginImpact: "中",
+    crmValue: 86,
+    executionEffort: "中",
+    recommendation: "建議與 A 同時測，B 做為主推情境頁。"
+  },
+  {
+    opportunityId: "family-summer-outing",
+    label: "A",
+    name: "暑假出遊用品集合",
+    pageAngle: "列出防曬、防蚊、補水與保冷商品。",
+    rewardAngle: "滿額送旅行收納包。",
+    projectedCtrLift: 6,
+    projectedCvrLift: 2,
+    marginImpact: "低",
+    crmValue: 74,
+    executionEffort: "低",
+    recommendation: "適合快速上線，但差異化有限。"
+  },
+  {
+    opportunityId: "family-summer-outing",
+    label: "B",
+    name: "親子出門前 30 分鐘準備包",
+    pageAngle: "用出門前情境重組商品與贈獎。",
+    rewardAngle: "依門檻送保冷袋、兒童濕紙巾與防水收納袋。",
+    projectedCtrLift: 14,
+    projectedCvrLift: 5,
+    marginImpact: "中",
+    crmValue: 92,
+    executionEffort: "低",
+    recommendation: "適合 CRM 分眾與 LINE 推播。"
   }
 ];
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { platformModules } from "./navigation";
-import { getCmsExportPackage, getFeaturedOpportunity } from "./studio";
+import { getCmsExportPackage, getComparisonVariants, getFeaturedOpportunity, getRankedOpportunities } from "./studio";
 
 describe("studio helpers", () => {
   it("returns the featured demand opportunity with evidence and scoring", () => {
@@ -33,5 +33,21 @@ describe("studio helpers", () => {
       "/feedback"
     ]);
     expect(platformModules.every((module) => module.task.length > 10)).toBe(true);
+  });
+
+  it("ranks opportunity rows for the marketing command center", () => {
+    const ranked = getRankedOpportunities();
+
+    expect(ranked[0].rank).toBe(1);
+    expect(ranked[0].opportunityScore).toBeGreaterThanOrEqual(ranked[1].opportunityScore);
+    expect(ranked[0].categoryGroup.length).toBeGreaterThan(0);
+  });
+
+  it("returns A/B strategy variants for the selected opportunity", () => {
+    const variants = getComparisonVariants("small-space-cooling");
+
+    expect(variants).toHaveLength(2);
+    expect(variants.map((variant) => variant.label)).toEqual(["A", "B"]);
+    expect(variants[1].projectedCtrLift).toBeGreaterThan(variants[0].projectedCtrLift);
   });
 });

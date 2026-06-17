@@ -1,16 +1,52 @@
 import {
   campaignPageSections,
   campaignStrategies,
+  comparisonVariants,
   demandOpportunities,
   rewardPageSections,
+  type ComparisonVariant,
   type CmsExportPackage,
   type DemandOpportunity
 } from "../data/mockStudio";
+
+export type RankedOpportunity = DemandOpportunity & {
+  rank: number;
+  opportunityScore: number;
+};
 
 export function getFeaturedOpportunity(): DemandOpportunity {
   return demandOpportunities.reduce((best, opportunity) =>
     opportunity.businessScore > best.businessScore ? opportunity : best
   );
+}
+
+export function getRankedOpportunities(): RankedOpportunity[] {
+  return demandOpportunities
+    .map((opportunity) => ({
+      ...opportunity,
+      opportunityScore: Math.round(
+        opportunity.momentum * 0.24 +
+          opportunity.businessScore * 0.26 +
+          opportunity.productFit * 0.18 +
+          opportunity.rewardFit * 0.14 +
+          opportunity.crmFit * 0.12 -
+          (opportunity.executionEffort === "高" ? 6 : opportunity.executionEffort === "中" ? 3 : 0)
+      )
+    }))
+    .sort((a, b) => b.opportunityScore - a.opportunityScore)
+    .map((opportunity, index) => ({
+      ...opportunity,
+      rank: index + 1
+    }));
+}
+
+export function getComparisonVariants(opportunityId: string): ComparisonVariant[] {
+  const variants = comparisonVariants.filter((variant) => variant.opportunityId === opportunityId);
+  if (variants.length > 0) {
+    return variants;
+  }
+
+  return comparisonVariants.filter((variant) => variant.opportunityId === getFeaturedOpportunity().id);
 }
 
 export function getPrimaryStrategy() {

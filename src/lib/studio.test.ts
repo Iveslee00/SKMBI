@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { platformModules } from "./navigation";
+import { campaignWorkflowSteps, platformModules } from "./navigation";
 import { getCmsExportPackage, getComparisonVariants, getFeaturedOpportunity, getRankedOpportunities } from "./studio";
 
 describe("studio helpers", () => {
@@ -20,17 +20,25 @@ describe("studio helpers", () => {
     expect(exportPackage.json.type).toBe("campaign");
   });
 
-  it("defines a multi-module platform navigation model", () => {
-    expect(platformModules.length).toBeGreaterThanOrEqual(7);
+  it("separates global workspaces from campaign workflow steps", () => {
     expect(platformModules.map((module) => module.href)).toEqual([
       "/",
       "/radar",
-      "/evidence",
-      "/strategy",
-      "/campaign",
-      "/rewards",
+      "/projects",
+      "/builder",
       "/export",
       "/feedback"
+    ]);
+    expect(platformModules.map((module) => module.shortLabel)).not.toContain("策展依據");
+    expect(platformModules.map((module) => module.shortLabel)).not.toContain("策略工作室");
+    expect(campaignWorkflowSteps.map((step) => step.shortLabel)).toEqual([
+      "依據",
+      "策略",
+      "A/B",
+      "活動頁",
+      "贈獎頁",
+      "匯出",
+      "成效"
     ]);
     expect(platformModules.every((module) => module.task.length > 10)).toBe(true);
   });

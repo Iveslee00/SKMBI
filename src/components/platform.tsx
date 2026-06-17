@@ -7,7 +7,7 @@ import {
   rewardPageSections,
   type DemandOpportunity
 } from "../data/mockStudio";
-import { platformModules } from "../lib/navigation";
+import { campaignWorkflowSteps, platformModules } from "../lib/navigation";
 import {
   getBusinessReasoningAverage,
   getCmsExportPackage,
@@ -41,6 +41,7 @@ export function PlatformShell({
           </div>
         </div>
         <nav className="module-nav">
+          <p className="nav-section-label">Workspaces</p>
           {platformModules.map((module) => (
             <Link
               aria-current={active === module.href ? "page" : undefined}
@@ -67,6 +68,20 @@ export function PlatformShell({
             <small>EC Design Goal</small>
           </div>
         </header>
+        <section className="case-workflow" aria-label="Campaign workflow">
+          <div>
+            <p className="eyebrow">Active Campaign Case</p>
+            <strong>小坪數租屋族省電冷房</strong>
+          </div>
+          <nav>
+            {campaignWorkflowSteps.map((step) => (
+              <Link href={step.href} key={step.id}>
+                <span>{step.shortLabel}</span>
+                <small>{step.task}</small>
+              </Link>
+            ))}
+          </nav>
+        </section>
         {children}
       </section>
     </main>
@@ -146,7 +161,7 @@ export function DashboardPage() {
           <SignalBars opportunity={selected} />
           <div className="action-row">
             <Link href="/radar">進入雷達詳情</Link>
-            <Link href="/strategy">進策略工作室</Link>
+            <Link href="/projects">建立策展案</Link>
           </div>
         </section>
 
@@ -224,7 +239,63 @@ export function RadarPage() {
           <ReasoningList opportunity={featured} />
           <div className="action-row">
             <Link href="/strategy">用此議題產生策略</Link>
-            <Link href="/campaign">產生活動頁</Link>
+            <Link href="/builder">進入頁面產生器</Link>
+          </div>
+        </section>
+      </div>
+    </PlatformShell>
+  );
+}
+
+export function ProjectsPage() {
+  const featured = getFeaturedOpportunity();
+  const variants = getComparisonVariants(featured.id);
+
+  return (
+    <PlatformShell
+      active="/projects"
+      eyebrow="My Campaign Projects"
+      title="我的策展案"
+      description="行銷團隊選定議題後，會在這裡管理策展案狀態、待辦、審核與下一步產出。"
+    >
+      <div className="project-board">
+        <section className="module-card project-summary">
+          <div className="module-card-head">
+            <div>
+              <p className="eyebrow">Active Case</p>
+              <h2>{featured.shortTitle}</h2>
+            </div>
+            <Score value={featured.businessScore} label="依據" />
+          </div>
+          <p className="lead">{featured.summary}</p>
+          <div className="metric-strip">
+            <Metric label="狀態" value="策略中" />
+            <Metric label="產出" value="2 頁型" />
+            <Metric label="測試" value="A/B" />
+            <Metric label="CMS" value="待匯出" />
+          </div>
+          <div className="action-row">
+            <Link href="/strategy">繼續策略</Link>
+            <Link href="/builder">產生頁面</Link>
+          </div>
+        </section>
+
+        <section className="module-card">
+          <p className="eyebrow">Decision Queue</p>
+          <h2>待確認項目</h2>
+          <div className="task-list">
+            <article>
+              <strong>確認 B 版本是否作為主推</strong>
+              <span>{variants[1].recommendation}</span>
+            </article>
+            <article>
+              <strong>確認贈獎成本與門檻</strong>
+              <span>{variants[1].rewardAngle}</span>
+            </article>
+            <article>
+              <strong>確認 CMS 視覺素材需求</strong>
+              <span>需要 hero、商品組合、贈獎卡與活動規則模組。</span>
+            </article>
           </div>
         </section>
       </div>
@@ -356,6 +427,36 @@ export function RewardBuilderPage() {
       description="不是列出所有贈品，而是用生活情境、門檻與會員需求重組贈獎入口。"
     >
       <BuilderPreview type="reward" />
+    </PlatformShell>
+  );
+}
+
+export function PageGeneratorPage() {
+  return (
+    <PlatformShell
+      active="/builder"
+      eyebrow="Page Generator"
+      title="頁面產生器"
+      description="行銷先選定策展案，再在同一個工作區產生活動策展頁與贈獎集合頁。"
+    >
+      <div className="builder-hub">
+        <section className="module-card">
+          <p className="eyebrow">Campaign Page</p>
+          <h2>活動策展頁</h2>
+          <p className="lead">用需求情境、商品組合、贈獎理由與 CTA 組成完整策展頁。</p>
+          <div className="action-row">
+            <Link href="/campaign">打開活動頁草稿</Link>
+          </div>
+        </section>
+        <section className="module-card">
+          <p className="eyebrow">Reward Collection</p>
+          <h2>贈獎集合頁</h2>
+          <p className="lead">依生活情境、消費門檻與會員需求重組贈獎入口。</p>
+          <div className="action-row">
+            <Link href="/rewards">打開贈獎頁草稿</Link>
+          </div>
+        </section>
+      </div>
     </PlatformShell>
   );
 }

@@ -1371,6 +1371,8 @@ pre {
   .module-nav,
   .case-workflow nav,
   .ab-grid,
+  .ab-compare-grid,
+  .compare-matrix,
   .metric-strip,
   .project-board,
   .builder-hub {
@@ -1629,6 +1631,89 @@ button:focus-visible,
 .ab-grid dl {
   display: grid;
   gap: 8px;
+}
+
+.dashboard-comparison {
+  grid-column: 1 / -1;
+}
+
+.ab-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.ab-compare-grid article {
+  min-width: 0;
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.ab-compare-grid header {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+}
+
+.ab-compare-grid h3,
+.ab-compare-grid p {
+  margin: 0;
+}
+
+.ab-compare-grid h3 {
+  font-size: 1.25rem;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.compare-matrix {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.compare-matrix div {
+  min-width: 0;
+  min-height: 112px;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: rgba(248, 249, 252, 0.86);
+}
+
+.compare-matrix small {
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.compare-matrix p {
+  color: var(--ink);
+  line-height: 1.55;
+}
+
+.compare-matrix strong {
+  color: var(--brand-red);
+  font-size: 1.25rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.ab-compare-grid footer {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: var(--soft-red);
+  color: var(--brand-red-dark);
+  font-weight: 900;
+  line-height: 1.45;
 }
 
 .generated-page {

@@ -58,4 +58,12 @@ describe("studio helpers", () => {
     expect(variants.map((variant) => variant.label)).toEqual(["A", "B"]);
     expect(variants[1].projectedCtrLift).toBeGreaterThan(variants[0].projectedCtrLift);
   });
+
+  it("keeps comparison variants suitable for side-by-side review", () => {
+    const variants = getComparisonVariants("small-space-cooling");
+
+    expect(variants.every((variant) => variant.pageAngle.length > 12)).toBe(true);
+    expect(variants.every((variant) => variant.rewardAngle.length > 12)).toBe(true);
+    expect(variants.every((variant) => variant.recommendation.length > 12)).toBe(true);
+  });
 });

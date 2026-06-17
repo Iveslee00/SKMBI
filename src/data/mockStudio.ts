@@ -211,7 +211,7 @@ export const comparisonVariants: ComparisonVariant[] = [
     label: "A",
     name: "原檔期型家電活動",
     pageAngle: "夏季冷房家電折扣，主打指定商品與價格。",
-    rewardAngle: "滿額贈一般生活小物。",
+    rewardAngle: "滿額贈一般生活小物，作為原檔期活動的基準誘因。",
     projectedCtrLift: 3,
     projectedCvrLift: 1,
     marginImpact: "中",

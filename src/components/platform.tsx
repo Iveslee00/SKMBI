@@ -165,7 +165,7 @@ export function DashboardPage() {
           </div>
         </section>
 
-        <section className="module-card comparison-panel">
+        <section className="module-card comparison-panel dashboard-comparison">
           <div className="module-card-head">
             <div>
               <p className="eyebrow">A/B Test Planning</p>
@@ -173,29 +173,34 @@ export function DashboardPage() {
             </div>
             <span className="mode-pill">Comparison Mode</span>
           </div>
-          <div className="ab-grid">
+          <div className="ab-compare-grid">
             {variants.map((variant) => (
               <article key={variant.label}>
-                <span className="variant-label">{variant.label}</span>
-                <h3>{variant.name}</h3>
-                <p>{variant.pageAngle}</p>
-                <dl>
+                <header>
+                  <span className="variant-label">{variant.label}</span>
+                  <h3>{variant.name}</h3>
+                </header>
+                <div className="compare-matrix">
                   <div>
-                    <dt>贈獎</dt>
-                    <dd>{variant.rewardAngle}</dd>
+                    <small>頁面角度</small>
+                    <p>{variant.pageAngle}</p>
                   </div>
                   <div>
-                    <dt>預估 CTR / CVR</dt>
-                    <dd>
+                    <small>贈獎邏輯</small>
+                    <p>{variant.rewardAngle}</p>
+                  </div>
+                  <div>
+                    <small>預估 CTR / CVR</small>
+                    <strong>
                       +{variant.projectedCtrLift}% / +{variant.projectedCvrLift}%
-                    </dd>
+                    </strong>
                   </div>
                   <div>
-                    <dt>CRM 價值</dt>
-                    <dd>{variant.crmValue}</dd>
+                    <small>CRM 價值</small>
+                    <strong>{variant.crmValue}</strong>
                   </div>
-                </dl>
-                <strong>{variant.recommendation}</strong>
+                </div>
+                <footer>{variant.recommendation}</footer>
               </article>
             ))}
           </div>

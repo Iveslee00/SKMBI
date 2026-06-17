@@ -18,30 +18,23 @@ export const platformModules: PlatformModule[] = [
   {
     href: "/",
     label: "Command Center",
-    shortLabel: "總覽",
-    task: "查看今日需求、策展任務與平台整體狀態",
+    shortLabel: "工作台",
+    task: "查看目前策展案進度、待辦與近期成效摘要",
     status: "Ready"
   },
   {
-    href: "/radar",
-    label: "Opportunity Radar",
-    shortLabel: "機會雷達",
-    task: "跨品類查看顧客需求、熱門議題與策展機會排名",
+    href: "/create",
+    label: "Create Campaign",
+    shortLabel: "建立策展案",
+    task: "從顧客需求開始建立一個新的策展案",
     status: "Ready"
   },
   {
     href: "/projects",
     label: "My Campaign Projects",
-    shortLabel: "我的策展案",
-    task: "管理已選定、進行中、待審核與準備上線的策展案",
+    shortLabel: "策展案列表",
+    task: "管理進行中、待審核與準備上線的策展案",
     status: "Ready"
-  },
-  {
-    href: "/builder",
-    label: "Page Generator",
-    shortLabel: "頁面產生器",
-    task: "把已確認策略轉成活動頁與贈獎集合頁草稿",
-    status: "Draft"
   },
   {
     href: "/export",
@@ -69,42 +62,42 @@ export const campaignWorkflowSteps: CampaignWorkflowStep[] = [
   },
   {
     id: "strategy",
-    href: "/strategy",
+    href: "/create#strategy",
     label: "Strategy",
     shortLabel: "策略",
     task: "將議題延伸為可討論的活動主張與溝通角度"
   },
   {
     id: "comparison",
-    href: "/strategy#ab-test",
+    href: "/create#ab-test",
     label: "A/B Comparison",
     shortLabel: "A/B",
     task: "比較原活動做法與顧客需求導向做法"
   },
   {
     id: "campaign",
-    href: "/campaign",
+    href: "/create#campaign",
     label: "Campaign Page",
     shortLabel: "活動頁",
     task: "產出活動策展頁草稿"
   },
   {
     id: "rewards",
-    href: "/rewards",
+    href: "/create#rewards",
     label: "Reward Page",
     shortLabel: "贈獎頁",
     task: "產出贈獎集合頁草稿"
   },
   {
     id: "export",
-    href: "/export",
+    href: "/create#export",
     label: "Export",
     shortLabel: "匯出",
     task: "整理 CMS 所需 HTML、CSS、JS、JSON 與追蹤參數"
   },
   {
     id: "feedback",
-    href: "/feedback",
+    href: "/create#feedback",
     label: "Feedback",
     shortLabel: "成效",
     task: "回收上線後成效並形成下一次策展依據"

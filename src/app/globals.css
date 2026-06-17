@@ -1091,6 +1091,18 @@ pre {
   gap: 14px;
 }
 
+.dashboard-simple {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+  gap: 14px;
+}
+
+.dashboard-primary {
+  min-height: 360px;
+  display: grid;
+  align-content: space-between;
+}
+
 .project-summary {
   grid-row: span 2;
 }
@@ -1375,6 +1387,7 @@ pre {
   .compare-matrix,
   .metric-strip,
   .project-board,
+  .dashboard-simple,
   .builder-hub {
     grid-template-columns: 1fr;
   }

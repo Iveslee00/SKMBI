@@ -22,12 +22,14 @@ export function PlatformShell({
   eyebrow,
   title,
   description,
+  showWorkflow = false,
   children
 }: {
   active: string;
   eyebrow: string;
   title: string;
   description: string;
+  showWorkflow?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -68,20 +70,22 @@ export function PlatformShell({
             <small>EC Design Goal</small>
           </div>
         </header>
-        <section className="case-workflow" aria-label="Campaign workflow">
-          <div>
-            <p className="eyebrow">Active Campaign Case</p>
-            <strong>小坪數租屋族省電冷房</strong>
-          </div>
-          <nav>
-            {campaignWorkflowSteps.map((step) => (
-              <Link href={step.href} key={step.id}>
-                <span>{step.shortLabel}</span>
-                <small>{step.task}</small>
-              </Link>
-            ))}
-          </nav>
-        </section>
+        {showWorkflow ? (
+          <section className="case-workflow" aria-label="Campaign workflow">
+            <div>
+              <p className="eyebrow">Campaign Flow</p>
+              <strong>建立策展案</strong>
+            </div>
+            <nav>
+              {campaignWorkflowSteps.map((step) => (
+                <Link href={step.href} key={step.id}>
+                  <span>{step.shortLabel}</span>
+                  <small>{step.task}</small>
+                </Link>
+              ))}
+            </nav>
+          </section>
+        ) : null}
         {children}
       </section>
     </main>
@@ -90,6 +94,46 @@ export function PlatformShell({
 
 export function DashboardPage() {
   const featured = getFeaturedOpportunity();
+
+  return (
+    <PlatformShell
+      active="/"
+      eyebrow="Command Center"
+      title="工作台"
+      description="查看目前策展案狀態，或從唯一入口建立新的策展案。"
+    >
+      <div className="dashboard-simple">
+        <section className="module-card dashboard-primary">
+          <div>
+            <p className="eyebrow">Primary Action</p>
+            <h2>建立策展案</h2>
+            <p className="lead">從顧客需求開始，依序完成洞察、策略、A/B、頁面產出與 CMS 匯出。</p>
+          </div>
+          <div className="action-row">
+            <Link href="/create">開始建立</Link>
+          </div>
+        </section>
+
+        <section className="module-card">
+          <p className="eyebrow">Active Case</p>
+          <h2>{featured.shortTitle}</h2>
+          <p className="lead">{featured.summary}</p>
+          <div className="metric-strip">
+            <Metric label="狀態" value="策略中" />
+            <Metric label="下一步" value="A/B" />
+            <Metric label="CMS" value="未匯出" />
+            <Metric label="成效" value="待上線" />
+          </div>
+          <div className="action-row">
+            <Link href="/projects">查看策展案列表</Link>
+          </div>
+        </section>
+      </div>
+    </PlatformShell>
+  );
+}
+
+export function CreateCampaignPage() {
   const ranked = getRankedOpportunities();
   const selected = ranked[0];
   const variants = getComparisonVariants(selected.id);
@@ -97,10 +141,11 @@ export function DashboardPage() {
 
   return (
     <PlatformShell
-      active="/"
-      eyebrow="Command Center"
-      title="策展機會總覽"
-      description="查看跨品類機會排名、選中議題摘要與 A/B 測試方向。"
+      active="/create"
+      eyebrow="Create Campaign"
+      title="建立策展案"
+      description="依序選需求、看洞察、定策略、比較 A/B，再產出頁面與 CMS 素材。"
+      showWorkflow
     >
       <div className="command-layout">
         <aside className="module-card filter-rail">
@@ -160,12 +205,12 @@ export function DashboardPage() {
           </div>
           <SignalBars opportunity={selected} />
           <div className="action-row">
-            <Link href="/radar">進入雷達詳情</Link>
-            <Link href="/projects">建立策展案</Link>
+            <Link href="#strategy">下一步：定策略</Link>
+            <Link href="/projects">存成策展案</Link>
           </div>
         </section>
 
-        <section className="module-card comparison-panel dashboard-comparison">
+        <section className="module-card comparison-panel dashboard-comparison" id="ab-test">
           <div className="module-card-head">
             <div>
               <p className="eyebrow">A/B Test Planning</p>

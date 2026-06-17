@@ -23,11 +23,17 @@ describe("studio helpers", () => {
   it("separates global workspaces from campaign workflow steps", () => {
     expect(platformModules.map((module) => module.href)).toEqual([
       "/",
-      "/radar",
+      "/create",
       "/projects",
-      "/builder",
       "/export",
       "/feedback"
+    ]);
+    expect(platformModules.map((module) => module.shortLabel)).toEqual([
+      "工作台",
+      "建立策展案",
+      "策展案列表",
+      "CMS 匯出",
+      "成效回流"
     ]);
     expect(platformModules.map((module) => module.shortLabel)).not.toContain("策展依據");
     expect(platformModules.map((module) => module.shortLabel)).not.toContain("策略工作室");

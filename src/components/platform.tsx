@@ -136,7 +136,6 @@ export function DashboardPage() {
 export function CreateCampaignPage() {
   const ranked = getRankedOpportunities();
   const selected = ranked[0];
-  const variants = getComparisonVariants(selected.id);
   const categories = ["全部", ...Array.from(new Set(ranked.map((opportunity) => opportunity.categoryGroup)))];
 
   return (
@@ -144,13 +143,13 @@ export function CreateCampaignPage() {
       active="/create"
       eyebrow="Create Campaign"
       title="建立策展案"
-      description="選需求、建立案、看洞察、產生策展方案、做 AI 預估比較，再產出頁面。"
+      description="Step 1：先從 AI 排名中選一個顧客需求。"
       showWorkflow
     >
-      <div className="command-layout">
+      <div className="create-step-layout">
         <aside className="module-card filter-rail">
           <p className="eyebrow">Category Filters</p>
-          <h2>品類與工作類型</h2>
+          <h2>篩選需求</h2>
           <div className="filter-list">
             {categories.map((category, index) => (
               <button className={index === 0 ? "active" : ""} key={category}>
@@ -167,136 +166,34 @@ export function CreateCampaignPage() {
         <section className="module-card opportunity-rank-panel" id="select-demand">
           <div className="module-card-head">
             <div>
-              <p className="eyebrow">Opportunity Ranking</p>
-              <h2>策展機會排行榜</h2>
+              <p className="eyebrow">Step 1</p>
+              <h2>選一個顧客需求</h2>
+              <p className="lead">先只做一件事：從 AI 排名中選出要建立策展案的需求。後面的洞察、方案、AI 預估與產頁會在下一步展開。</p>
             </div>
             <Score value={ranked.length} label="議題" />
           </div>
-          <div className="ranking-table">
+          <div className="demand-choice-list">
             {ranked.map((opportunity) => (
               <article className={opportunity.id === selected.id ? "selected" : ""} key={opportunity.id}>
-                <span className="rank-number">{opportunity.rank}</span>
-                <div>
-                  <strong>{opportunity.shortTitle}</strong>
-                  <small>{opportunity.categoryGroup}</small>
-                </div>
-                <span>{opportunity.opportunityScore}</span>
-                <span>{opportunity.recommendedOutput}</span>
-                <span>{opportunity.executionEffort}</span>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="module-card selected-topic-panel" id="insight">
-          <span className="anchor-target" id="create-case" />
-          <div className="module-card-head">
-            <div>
-              <p className="eyebrow">Selected Topic</p>
-              <h2>{selected.title}</h2>
-            </div>
-            <Score value={selected.opportunityScore} label="機會分" />
-          </div>
-          <p className="lead">{selected.summary}</p>
-          <div className="metric-strip">
-            <Metric label="需求成長" value={`+${selected.demandGrowth}%`} />
-            <Metric label="商品適配" value={selected.productFit} />
-            <Metric label="贈獎適配" value={selected.rewardFit} />
-            <Metric label="CRM 價值" value={selected.crmFit} />
-          </div>
-          <SignalBars opportunity={selected} />
-          <div className="action-row">
-            <Link href="#generate-options">下一步：產生策展方案</Link>
-            <Link href="/projects">建立策展案</Link>
-          </div>
-        </section>
-
-        <section className="module-card dashboard-comparison" id="generate-options">
-          <div className="module-card-head">
-            <div>
-              <p className="eyebrow">Generate Campaign Options</p>
-              <h2>產生策展方案</h2>
-              <p className="lead">AI 根據選定需求產生可做成頁面的方案，不是先寫文案，而是先定活動主張、商品組合與贈獎方式。</p>
-            </div>
-            <span className="mode-pill">2 Options</span>
-          </div>
-          <div className="strategy-board">
-            {campaignStrategies.map((strategy) => (
-              <article className="module-card" key={strategy.id}>
-                <div className="module-card-head">
-                  <h3>{strategy.name}</h3>
-                  <Score value={strategy.confidence} label="信心" />
-                </div>
-                <p className="proposition">{strategy.proposition}</p>
-                <dl className="compact-list">
+                <div className="choice-main">
+                  <span className="rank-number">{opportunity.rank}</span>
                   <div>
-                    <dt>商品組合</dt>
-                    <dd>{strategy.productLogic}</dd>
-                  </div>
-                  <div>
-                    <dt>贈獎方式</dt>
-                    <dd>{strategy.rewardLogic}</dd>
-                  </div>
-                </dl>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="module-card comparison-panel dashboard-comparison" id="forecast">
-          <span className="anchor-target" id="select-option" />
-          <div className="module-card-head">
-            <div>
-              <p className="eyebrow">AI Forecast Before Launch</p>
-              <h2>上線前預估比較</h2>
-              <p className="lead">比較不同策展方案的文案吸引度、活動力度、贈獎吸引力與預估成效，再決定產哪一版頁面。</p>
-            </div>
-            <span className="mode-pill">AI 預估</span>
-          </div>
-          <div className="ab-compare-grid">
-            {variants.map((variant) => (
-              <article key={variant.label}>
-                <header>
-                  <span className="variant-label">{variant.label}</span>
-                  <h3>{variant.name}</h3>
-                </header>
-                <div className="compare-matrix">
-                  <div>
-                    <small>文案 / 頁面角度</small>
-                    <p>{variant.pageAngle}</p>
-                  </div>
-                  <div>
-                    <small>活動力度 / 贈獎邏輯</small>
-                    <p>{variant.rewardAngle}</p>
-                  </div>
-                  <div>
-                    <small>預估 CTR / CVR</small>
-                    <strong>
-                      +{variant.projectedCtrLift}% / +{variant.projectedCvrLift}%
-                    </strong>
-                  </div>
-                  <div>
-                    <small>CRM 價值</small>
-                    <strong>{variant.crmValue}</strong>
+                    <strong>{opportunity.shortTitle}</strong>
+                    <small>{opportunity.categoryGroup}</small>
+                    <p>{opportunity.summary}</p>
                   </div>
                 </div>
-                <footer>{variant.recommendation}</footer>
+                <div className="choice-meta">
+                  <Metric label="推薦分" value={opportunity.opportunityScore} />
+                  <Metric label="熱度" value={opportunity.momentum} />
+                  <Metric label="頁型" value={opportunity.recommendedOutput} />
+                  <Metric label="難度" value={opportunity.executionEffort} />
+                </div>
+                <div className="action-row">
+                  <Link href="/projects">選擇這個需求</Link>
+                </div>
               </article>
             ))}
-          </div>
-        </section>
-
-        <section className="module-card dashboard-comparison" id="generate-page">
-          <div className="module-card-head">
-            <div>
-              <p className="eyebrow">Selected Option</p>
-              <h2>選定方案後再產頁</h2>
-              <p className="lead">使用者先看 AI 預估比較，選定要上線或測試的方案，才進入活動頁與贈獎頁產出。</p>
-            </div>
-          </div>
-          <div className="action-row">
-            <Link href="/campaign">產生活動頁</Link>
-            <Link href="/rewards">產生贈獎頁</Link>
           </div>
         </section>
       </div>

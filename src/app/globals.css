@@ -1103,6 +1103,66 @@ pre {
   align-content: space-between;
 }
 
+.create-step-layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.demand-choice-list {
+  display: grid;
+  gap: 12px;
+}
+
+.demand-choice-list article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px auto;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.demand-choice-list article.selected {
+  border-color: rgba(215, 25, 32, 0.28);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 18px 50px rgba(215, 25, 32, 0.1);
+}
+
+.choice-main {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.choice-main strong,
+.choice-main small,
+.choice-main p {
+  display: block;
+  margin: 0;
+}
+
+.choice-main small {
+  margin-top: 4px;
+  color: var(--muted);
+}
+
+.choice-main p {
+  margin-top: 8px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.choice-meta {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
 .project-summary {
   grid-row: span 2;
 }
@@ -1331,6 +1391,7 @@ pre {
   .app-shell,
   .builder-layout,
   .command-layout,
+  .create-step-layout,
   .radar-layout {
     grid-template-columns: 1fr;
   }
@@ -1364,6 +1425,14 @@ pre {
     grid-template-columns: 38px minmax(180px, 1fr) 54px;
   }
 
+  .demand-choice-list article {
+    grid-template-columns: 1fr;
+  }
+
+  .choice-meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .ranking-table article > span:nth-last-child(-n + 2) {
     display: none;
   }
@@ -1388,6 +1457,7 @@ pre {
   .metric-strip,
   .project-board,
   .dashboard-simple,
+  .choice-meta,
   .builder-hub {
     grid-template-columns: 1fr;
   }
@@ -1537,8 +1607,13 @@ body {
 }
 
 .case-workflow nav a {
-  min-height: 70px;
+  min-height: 48px;
+  align-content: center;
   border-radius: 16px;
+}
+
+.case-workflow nav small {
+  display: none;
 }
 
 .case-workflow nav a:hover,

@@ -54,39 +54,53 @@ export const platformModules: PlatformModule[] = [
 
 export const campaignWorkflowSteps: CampaignWorkflowStep[] = [
   {
+    id: "select-demand",
+    href: "/create#select-demand",
+    label: "Select Demand",
+    shortLabel: "選需求",
+    task: "從 AI 排名中選一個顧客需求或議題"
+  },
+  {
+    id: "create-case",
+    href: "/create#create-case",
+    label: "Create Case",
+    shortLabel: "建立案",
+    task: "把選定需求建立成可追蹤的策展工作項目"
+  },
+  {
     id: "insight",
-    href: "/radar#insight",
+    href: "/create#insight",
     label: "Demand Insight",
     shortLabel: "洞察",
     task: "確認議題背後的需求來源、品類關聯與消費者情境"
   },
   {
-    id: "strategy",
-    href: "/create#strategy",
-    label: "Strategy",
-    shortLabel: "策略",
-    task: "將議題延伸為可討論的活動主張與溝通角度"
+    id: "generate-options",
+    href: "/create#generate-options",
+    label: "Generate Options",
+    shortLabel: "產生方案",
+    task: "AI 產生可做成頁面的策展方案"
   },
   {
-    id: "comparison",
-    href: "/create#ab-test",
-    label: "A/B Comparison",
-    shortLabel: "A/B",
-    task: "比較原活動做法與顧客需求導向做法"
+    id: "forecast",
+    href: "/create#forecast",
+    label: "AI Forecast",
+    shortLabel: "AI 預估",
+    task: "上線前比較文案吸引度、活動力度與預估成效"
   },
   {
-    id: "campaign",
-    href: "/create#campaign",
-    label: "Campaign Page",
-    shortLabel: "活動頁",
-    task: "產出活動策展頁草稿"
+    id: "select-option",
+    href: "/create#select-option",
+    label: "Select Option",
+    shortLabel: "選定方案",
+    task: "選定要產生頁面的策展版本"
   },
   {
-    id: "rewards",
-    href: "/create#rewards",
-    label: "Reward Page",
-    shortLabel: "贈獎頁",
-    task: "產出贈獎集合頁草稿"
+    id: "generate-page",
+    href: "/create#generate-page",
+    label: "Generate Page",
+    shortLabel: "產頁",
+    task: "產生活動頁或贈獎集合頁草稿"
   },
   {
     id: "export",

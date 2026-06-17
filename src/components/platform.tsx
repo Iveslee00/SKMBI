@@ -107,7 +107,7 @@ export function DashboardPage() {
           <div>
             <p className="eyebrow">Primary Action</p>
             <h2>建立策展案</h2>
-            <p className="lead">從顧客需求開始，依序完成洞察、策略、A/B、頁面產出與 CMS 匯出。</p>
+            <p className="lead">從顧客需求開始，依序建立策展案、產生方案、做上線前 AI 預估，再產出 CMS 頁面。</p>
           </div>
           <div className="action-row">
             <Link href="/create">開始建立</Link>
@@ -119,8 +119,8 @@ export function DashboardPage() {
           <h2>{featured.shortTitle}</h2>
           <p className="lead">{featured.summary}</p>
           <div className="metric-strip">
-            <Metric label="狀態" value="策略中" />
-            <Metric label="下一步" value="A/B" />
+            <Metric label="狀態" value="方案中" />
+            <Metric label="下一步" value="AI 預估" />
             <Metric label="CMS" value="未匯出" />
             <Metric label="成效" value="待上線" />
           </div>
@@ -144,7 +144,7 @@ export function CreateCampaignPage() {
       active="/create"
       eyebrow="Create Campaign"
       title="建立策展案"
-      description="依序選需求、看洞察、定策略、比較 A/B，再產出頁面與 CMS 素材。"
+      description="選需求、建立案、看洞察、產生策展方案、做 AI 預估比較，再產出頁面。"
       showWorkflow
     >
       <div className="command-layout">
@@ -164,7 +164,7 @@ export function CreateCampaignPage() {
           </div>
         </aside>
 
-        <section className="module-card opportunity-rank-panel">
+        <section className="module-card opportunity-rank-panel" id="select-demand">
           <div className="module-card-head">
             <div>
               <p className="eyebrow">Opportunity Ranking</p>
@@ -188,7 +188,8 @@ export function CreateCampaignPage() {
           </div>
         </section>
 
-        <section className="module-card selected-topic-panel">
+        <section className="module-card selected-topic-panel" id="insight">
+          <span className="anchor-target" id="create-case" />
           <div className="module-card-head">
             <div>
               <p className="eyebrow">Selected Topic</p>
@@ -205,18 +206,52 @@ export function CreateCampaignPage() {
           </div>
           <SignalBars opportunity={selected} />
           <div className="action-row">
-            <Link href="#strategy">下一步：定策略</Link>
-            <Link href="/projects">存成策展案</Link>
+            <Link href="#generate-options">下一步：產生策展方案</Link>
+            <Link href="/projects">建立策展案</Link>
           </div>
         </section>
 
-        <section className="module-card comparison-panel dashboard-comparison" id="ab-test">
+        <section className="module-card dashboard-comparison" id="generate-options">
           <div className="module-card-head">
             <div>
-              <p className="eyebrow">A/B Test Planning</p>
-              <h2>先比較，再產頁</h2>
+              <p className="eyebrow">Generate Campaign Options</p>
+              <h2>產生策展方案</h2>
+              <p className="lead">AI 根據選定需求產生可做成頁面的方案，不是先寫文案，而是先定活動主張、商品組合與贈獎方式。</p>
             </div>
-            <span className="mode-pill">Comparison Mode</span>
+            <span className="mode-pill">2 Options</span>
+          </div>
+          <div className="strategy-board">
+            {campaignStrategies.map((strategy) => (
+              <article className="module-card" key={strategy.id}>
+                <div className="module-card-head">
+                  <h3>{strategy.name}</h3>
+                  <Score value={strategy.confidence} label="信心" />
+                </div>
+                <p className="proposition">{strategy.proposition}</p>
+                <dl className="compact-list">
+                  <div>
+                    <dt>商品組合</dt>
+                    <dd>{strategy.productLogic}</dd>
+                  </div>
+                  <div>
+                    <dt>贈獎方式</dt>
+                    <dd>{strategy.rewardLogic}</dd>
+                  </div>
+                </dl>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="module-card comparison-panel dashboard-comparison" id="forecast">
+          <span className="anchor-target" id="select-option" />
+          <div className="module-card-head">
+            <div>
+              <p className="eyebrow">AI Forecast Before Launch</p>
+              <h2>上線前預估比較</h2>
+              <p className="lead">比較不同策展方案的文案吸引度、活動力度、贈獎吸引力與預估成效，再決定產哪一版頁面。</p>
+            </div>
+            <span className="mode-pill">AI 預估</span>
           </div>
           <div className="ab-compare-grid">
             {variants.map((variant) => (
@@ -227,11 +262,11 @@ export function CreateCampaignPage() {
                 </header>
                 <div className="compare-matrix">
                   <div>
-                    <small>頁面角度</small>
+                    <small>文案 / 頁面角度</small>
                     <p>{variant.pageAngle}</p>
                   </div>
                   <div>
-                    <small>贈獎邏輯</small>
+                    <small>活動力度 / 贈獎邏輯</small>
                     <p>{variant.rewardAngle}</p>
                   </div>
                   <div>
@@ -248,6 +283,20 @@ export function CreateCampaignPage() {
                 <footer>{variant.recommendation}</footer>
               </article>
             ))}
+          </div>
+        </section>
+
+        <section className="module-card dashboard-comparison" id="generate-page">
+          <div className="module-card-head">
+            <div>
+              <p className="eyebrow">Selected Option</p>
+              <h2>選定方案後再產頁</h2>
+              <p className="lead">使用者先看 AI 預估比較，選定要上線或測試的方案，才進入活動頁與贈獎頁產出。</p>
+            </div>
+          </div>
+          <div className="action-row">
+            <Link href="/campaign">產生活動頁</Link>
+            <Link href="/rewards">產生贈獎頁</Link>
           </div>
         </section>
       </div>
@@ -390,8 +439,8 @@ export function StrategyPage() {
     <PlatformShell
       active="/strategy"
       eyebrow="Strategy Studio"
-      title="策略與 A/B"
-      description={`目前議題：${featured.shortTitle}。比較策略版本並決定頁面產出。`}
+      title="方案與 AI 預估"
+      description={`目前議題：${featured.shortTitle}。比較策展方案並決定頁面產出。`}
     >
       <div className="strategy-workspace">
         <section className="module-card strategy-context">
@@ -461,7 +510,7 @@ export function CampaignBuilderPage() {
       active="/campaign"
       eyebrow="Campaign Builder"
       title="活動策展頁產生器"
-      description="把選定策略轉成 CMS 可用的活動頁區塊。"
+      description="把選定方案轉成 CMS 可用的活動頁區塊。"
     >
       <BuilderPreview type="campaign" />
     </PlatformShell>

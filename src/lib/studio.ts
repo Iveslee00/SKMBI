@@ -1,12 +1,18 @@
 import {
   campaignPageSections,
+  campaignProposals,
   campaignStrategies,
   comparisonVariants,
   demandOpportunities,
+  forecastRows,
   rewardPageSections,
+  savedCampaignProjects,
+  type CampaignProposal,
   type ComparisonVariant,
   type CmsExportPackage,
-  type DemandOpportunity
+  type DemandOpportunity,
+  type ForecastRow,
+  type SavedCampaignProject
 } from "../data/mockStudio";
 
 export type RankedOpportunity = DemandOpportunity & {
@@ -47,6 +53,24 @@ export function getComparisonVariants(opportunityId: string): ComparisonVariant[
   }
 
   return comparisonVariants.filter((variant) => variant.opportunityId === getFeaturedOpportunity().id);
+}
+
+export function getSavedCampaignProjects(): SavedCampaignProject[] {
+  return savedCampaignProjects;
+}
+
+export function getCampaignProposals(opportunityId: string): CampaignProposal[] {
+  const proposals = campaignProposals.filter((proposal) => proposal.opportunityId === opportunityId);
+  if (proposals.length > 0) {
+    return proposals;
+  }
+
+  return campaignProposals.filter((proposal) => proposal.opportunityId === getFeaturedOpportunity().id);
+}
+
+export function getForecastRows(opportunityId: string): ForecastRow[] {
+  const hasProposal = getCampaignProposals(opportunityId).length > 0;
+  return hasProposal ? forecastRows : [];
 }
 
 export function getPrimaryStrategy() {

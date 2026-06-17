@@ -56,6 +56,43 @@ export type ComparisonVariant = {
   recommendation: string;
 };
 
+export type SavedCampaignProject = {
+  id: string;
+  title: string;
+  demand: string;
+  stage: "選需求" | "編輯方案" | "AI 預估比較" | "產生語法" | "成效回流";
+  owner: string;
+  updatedAt: string;
+  nextAction: string;
+  score: number;
+};
+
+export type CampaignProposal = {
+  opportunityId: string;
+  label: "A" | "B";
+  name: string;
+  campaignType: "活動策展頁" | "贈獎集合頁";
+  campaignClaim: string;
+  targetAudience: string;
+  productBundle: string;
+  copyDirection: string;
+  rewardIntensity: string;
+  channelPlan: string;
+  expectedImpact: string;
+  marginPressure: "低" | "中" | "高";
+  executionEffort: "低" | "中" | "高";
+  editableFields: string[];
+  reasoning: string[];
+};
+
+export type ForecastRow = {
+  metric: string;
+  variantA: string;
+  variantB: string;
+  insight: string;
+  winner: "A" | "B" | "Tie";
+};
+
 export type PageSection = {
   eyebrow: string;
   title: string;
@@ -75,6 +112,39 @@ export type CmsExportPackage = {
     tracking: string[];
   };
 };
+
+export const savedCampaignProjects: SavedCampaignProject[] = [
+  {
+    id: "case-small-space-cooling",
+    title: "租屋族免安裝降溫策展",
+    demand: "小坪數租屋族正在尋找省電、免安裝的冷房方案",
+    stage: "AI 預估比較",
+    owner: "EC Design",
+    updatedAt: "今天 10:18",
+    nextAction: "回到方案頁調整贈獎力度後再比較",
+    score: 88
+  },
+  {
+    id: "case-family-outing",
+    title: "親子暑假出遊補給集合",
+    demand: "暑假出遊前的一次購足需求",
+    stage: "編輯方案",
+    owner: "Marketing",
+    updatedAt: "昨天 16:42",
+    nextAction: "確認兩個文案方向與商品組合",
+    score: 81
+  },
+  {
+    id: "case-new-hire-home",
+    title: "新鮮人租屋起手包",
+    demand: "第一次租屋需要降低採買複雜度",
+    stage: "產生語法",
+    owner: "EC PM",
+    updatedAt: "6/15 14:06",
+    nextAction: "檢查 CMS 區塊與追蹤參數",
+    score: 79
+  }
+];
 
 export const demandOpportunities: DemandOpportunity[] = [
   {
@@ -257,6 +327,89 @@ export const comparisonVariants: ComparisonVariant[] = [
     crmValue: 92,
     executionEffort: "低",
     recommendation: "適合 CRM 分眾與 LINE 推播。"
+  }
+];
+
+export const campaignProposals: CampaignProposal[] = [
+  {
+    opportunityId: "small-space-cooling",
+    label: "A",
+    name: "省電家電檔期版",
+    campaignType: "活動策展頁",
+    campaignClaim: "夏季冷房家電限時優惠，先把價格與指定商品講清楚。",
+    targetAudience: "已經在找冷氣、循環扇與節能家電的明確購買客",
+    productBundle: "移動式冷氣、DC 循環扇、一級能效風扇、遮光窗簾",
+    copyDirection: "用折扣、能效、坪數建議快速降低比較成本，文案偏商品導向。",
+    rewardIntensity: "滿 6,000 送生活小物，滿 12,000 加碼涼感毯。",
+    channelPlan: "站內 Banner、搜尋結果推薦、EDM 檔期提醒",
+    expectedImpact: "預估 CTR +3%、CVR +1%，適合作為 baseline。",
+    marginPressure: "中",
+    executionEffort: "低",
+    editableFields: ["活動名稱", "主標文案", "商品組合", "贈獎門檻", "渠道文案"],
+    reasoning: [
+      "商品與價格資訊完整，適合承接已經有購買意圖的顧客。",
+      "製作成本低，可快速作為基準版本。",
+      "缺點是顧客需求敘事較弱，較難創造非計畫性點擊。"
+    ]
+  },
+  {
+    opportunityId: "small-space-cooling",
+    label: "B",
+    name: "租屋免安裝情境版",
+    campaignType: "活動策展頁",
+    campaignClaim: "不能施工、怕電費、小房間太悶，也能找到可立即使用的降溫方案。",
+    targetAudience: "租屋族、小套房住戶、預算有限但急著改善悶熱的人",
+    productBundle: "移動式冷氣、循環扇、遮光簾、智慧節能插座、涼感寢具",
+    copyDirection: "用生活限制切入，再把商品變成三步驟解法，文案偏情境導向。",
+    rewardIntensity: "滿 8,000 送電費折抵券，滿 15,000 加碼延長保固或涼感毯。",
+    channelPlan: "LINE 租屋族分眾、社群短影音腳本、EDM 情境清單",
+    expectedImpact: "預估 CTR +18%、CVR +7%，較能拉高新客與會員互動。",
+    marginPressure: "中",
+    executionEffort: "中",
+    editableFields: ["活動名稱", "情境主標", "痛點文案", "贈獎力度", "商品排序", "渠道文案"],
+    reasoning: [
+      "議題直接對應租屋限制與電費焦慮，需求理由更具體。",
+      "商品從單品折扣變成解法組合，有機會提升連帶購買。",
+      "贈獎與電費、保固連動，能降低高單價家電的決策壓力。"
+    ]
+  }
+];
+
+export const forecastRows: ForecastRow[] = [
+  {
+    metric: "文案吸引度",
+    variantA: "價格與檔期清楚，但與一般夏季家電活動相似。",
+    variantB: "用租屋限制、不能施工、怕電費切入，較容易引發共鳴。",
+    insight: "B 更貼近顧客原始問題，適合作為主推敘事。",
+    winner: "B"
+  },
+  {
+    metric: "活動力度",
+    variantA: "滿額贈較一般，誘因偏補充。",
+    variantB: "電費折抵券與延長保固直接對應高單價疑慮。",
+    insight: "B 的贈獎理由更能支撐轉換，但要控管成本門檻。",
+    winner: "B"
+  },
+  {
+    metric: "商品組合",
+    variantA: "集中冷房家電，選品簡單。",
+    variantB: "冷房設備加上遮光、節能與寢具，解法較完整。",
+    insight: "B 更能做成策展頁，但需要商品排序與庫存確認。",
+    winner: "B"
+  },
+  {
+    metric: "預估成效",
+    variantA: "CTR +3%、CVR +1%、CRM 價值 62。",
+    variantB: "CTR +18%、CVR +7%、CRM 價值 86。",
+    insight: "B 的需求敘事帶來較高互動預估。",
+    winner: "B"
+  },
+  {
+    metric: "執行風險",
+    variantA: "素材與上架速度較穩定。",
+    variantB: "需要補足情境素材、活動規則與商品適用坪數說明。",
+    insight: "A 可保留作為備案，B 進入主推前需確認素材與法務文案。",
+    winner: "A"
   }
 ];
 

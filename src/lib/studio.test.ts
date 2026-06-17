@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { campaignWorkflowSteps, platformModules } from "./navigation";
-import { getCmsExportPackage, getComparisonVariants, getFeaturedOpportunity, getRankedOpportunities } from "./studio";
+import {
+  getCampaignProposals,
+  getCmsExportPackage,
+  getComparisonVariants,
+  getFeaturedOpportunity,
+  getForecastRows,
+  getRankedOpportunities,
+  getSavedCampaignProjects
+} from "./studio";
 
 describe("studio helpers", () => {
   it("returns the featured demand opportunity with evidence and scoring", () => {
@@ -39,16 +47,22 @@ describe("studio helpers", () => {
     expect(platformModules.map((module) => module.shortLabel)).not.toContain("策略工作室");
     expect(campaignWorkflowSteps.map((step) => step.shortLabel)).toEqual([
       "選需求",
-      "建立案",
-      "洞察",
-      "產生方案",
+      "編輯方案",
       "AI 預估",
       "選定方案",
-      "產頁",
-      "匯出",
+      "產生語法",
       "成效"
     ]);
     expect(platformModules.every((module) => module.task.length > 10)).toBe(true);
+  });
+
+  it("keeps the workbench focused on saved campaign projects", () => {
+    const projects = getSavedCampaignProjects();
+
+    expect(projects.length).toBeGreaterThanOrEqual(3);
+    expect(projects.every((project) => project.title.length > 0)).toBe(true);
+    expect(projects.every((project) => project.nextAction.length > 0)).toBe(true);
+    expect(projects.map((project) => project.stage)).toContain("AI 預估比較");
   });
 
   it("ranks opportunity rows for the marketing command center", () => {
@@ -73,5 +87,24 @@ describe("studio helpers", () => {
     expect(variants.every((variant) => variant.pageAngle.length > 12)).toBe(true);
     expect(variants.every((variant) => variant.rewardAngle.length > 12)).toBe(true);
     expect(variants.every((variant) => variant.recommendation.length > 12)).toBe(true);
+  });
+
+  it("creates two editable campaign proposals before AI forecasting", () => {
+    const proposals = getCampaignProposals("small-space-cooling");
+
+    expect(proposals).toHaveLength(2);
+    expect(proposals.every((proposal) => proposal.editableFields.length >= 4)).toBe(true);
+    expect(proposals.every((proposal) => proposal.copyDirection.length > 12)).toBe(true);
+    expect(proposals.every((proposal) => proposal.rewardIntensity.length > 8)).toBe(true);
+    expect(proposals.every((proposal) => proposal.reasoning.length >= 3)).toBe(true);
+  });
+
+  it("returns detailed forecast rows for the comparison step", () => {
+    const rows = getForecastRows("small-space-cooling");
+
+    expect(rows.length).toBeGreaterThanOrEqual(5);
+    expect(rows.map((row) => row.metric)).toContain("文案吸引度");
+    expect(rows.every((row) => row.variantA.length > 0 && row.variantB.length > 0)).toBe(true);
+    expect(rows.some((row) => row.winner === "B")).toBe(true);
   });
 });

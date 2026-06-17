@@ -5,16 +5,21 @@ import {
   demandOpportunities,
   feedbackItems,
   rewardPageSections,
-  type DemandOpportunity
+  type CampaignProposal,
+  type DemandOpportunity,
+  type SavedCampaignProject
 } from "../data/mockStudio";
 import { campaignWorkflowSteps, platformModules } from "../lib/navigation";
 import {
   getBusinessReasoningAverage,
+  getCampaignProposals,
   getCmsExportPackage,
   getComparisonVariants,
   getFeaturedOpportunity,
+  getForecastRows,
   getPrimaryStrategy,
-  getRankedOpportunities
+  getRankedOpportunities,
+  getSavedCampaignProjects
 } from "../lib/studio";
 
 export function PlatformShell({
@@ -23,6 +28,7 @@ export function PlatformShell({
   title,
   description,
   showWorkflow = false,
+  activeWorkflowStep,
   children
 }: {
   active: string;
@@ -30,6 +36,7 @@ export function PlatformShell({
   title: string;
   description: string;
   showWorkflow?: boolean;
+  activeWorkflowStep?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -78,7 +85,7 @@ export function PlatformShell({
             </div>
             <nav>
               {campaignWorkflowSteps.map((step) => (
-                <Link href={step.href} key={step.id}>
+                <Link className={activeWorkflowStep === step.id ? "active" : ""} href={step.href} key={step.id}>
                   <span>{step.shortLabel}</span>
                   <small>{step.task}</small>
                 </Link>
@@ -93,42 +100,16 @@ export function PlatformShell({
 }
 
 export function DashboardPage() {
-  const featured = getFeaturedOpportunity();
+  const projects = getSavedCampaignProjects();
 
   return (
     <PlatformShell
       active="/"
       eyebrow="Command Center"
       title="工作台"
-      description="查看目前策展案狀態，或從唯一入口建立新的策展案。"
+      description="只列出目前已儲存的策展案，方便回到正在進行的工作。"
     >
-      <div className="dashboard-simple">
-        <section className="module-card dashboard-primary">
-          <div>
-            <p className="eyebrow">Primary Action</p>
-            <h2>建立策展案</h2>
-            <p className="lead">從顧客需求開始，依序建立策展案、產生方案、做上線前 AI 預估，再產出 CMS 頁面。</p>
-          </div>
-          <div className="action-row">
-            <Link href="/create">開始建立</Link>
-          </div>
-        </section>
-
-        <section className="module-card">
-          <p className="eyebrow">Active Case</p>
-          <h2>{featured.shortTitle}</h2>
-          <p className="lead">{featured.summary}</p>
-          <div className="metric-strip">
-            <Metric label="狀態" value="方案中" />
-            <Metric label="下一步" value="AI 預估" />
-            <Metric label="CMS" value="未匯出" />
-            <Metric label="成效" value="待上線" />
-          </div>
-          <div className="action-row">
-            <Link href="/projects">查看策展案列表</Link>
-          </div>
-        </section>
-      </div>
+      <SavedProjectsTable projects={projects} />
     </PlatformShell>
   );
 }
@@ -143,8 +124,9 @@ export function CreateCampaignPage() {
       active="/create"
       eyebrow="Create Campaign"
       title="建立策展案"
-      description="Step 1：先從 AI 排名中選一個顧客需求。"
+      description="Step 1：看完需求排名、選擇理由與數據，再決定要用哪個議題開始。"
       showWorkflow
+      activeWorkflowStep="select-demand"
     >
       <div className="create-step-layout">
         <aside className="module-card filter-rail">
@@ -167,8 +149,8 @@ export function CreateCampaignPage() {
           <div className="module-card-head">
             <div>
               <p className="eyebrow">Step 1</p>
-              <h2>選一個顧客需求</h2>
-              <p className="lead">先只做一件事：從 AI 排名中選出要建立策展案的需求。後面的洞察、方案、AI 預估與產頁會在下一步展開。</p>
+              <h2>選一個有依據的需求</h2>
+              <p className="lead">這一步不是在想活動，而是在確認「為什麼值得做」。看完數據與理由後，再選定要進入方案產生的議題。</p>
             </div>
             <Score value={ranked.length} label="議題" />
           </div>
@@ -190,12 +172,185 @@ export function CreateCampaignPage() {
                   <Metric label="難度" value={opportunity.executionEffort} />
                 </div>
                 <div className="action-row">
-                  <Link href="/projects">選擇這個需求</Link>
+                  <Link href="/create/options">選擇這個需求</Link>
                 </div>
               </article>
             ))}
           </div>
         </section>
+
+        <section className="module-card selected-topic-panel">
+          <div className="module-card-head">
+            <div>
+              <p className="eyebrow">Selected Preview</p>
+              <h2>{selected.title}</h2>
+            </div>
+            <Score value={selected.opportunityScore} label="推薦分" />
+          </div>
+          <p className="lead">{selected.summary}</p>
+          <div className="metric-strip">
+            <Metric label="需求熱度" value={selected.momentum} />
+            <Metric label="商品適配" value={selected.productFit} />
+            <Metric label="贈獎適配" value={selected.rewardFit} />
+            <Metric label="CRM 價值" value={selected.crmFit} />
+          </div>
+          <SignalBars opportunity={selected} />
+          <ReasoningList opportunity={selected} />
+          <div className="risk-box">
+            <strong>需要留意</strong>
+            <ul>
+              {selected.risks.map((risk) => (
+                <li key={risk}>{risk}</li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      </div>
+    </PlatformShell>
+  );
+}
+
+export function CampaignOptionsPage() {
+  const opportunity = getFeaturedOpportunity();
+  const proposals = getCampaignProposals(opportunity.id);
+
+  return (
+    <PlatformShell
+      active="/create"
+      eyebrow="Create Campaign"
+      title="產生並編輯策展方案"
+      description="Step 2：AI 先針對選定議題產生兩個方案，使用者可調整文案、商品與贈獎力度後再比較。"
+      showWorkflow
+      activeWorkflowStep="edit-options"
+    >
+      <section className="module-card step-context">
+        <div>
+          <p className="eyebrow">Selected Demand</p>
+          <h2>{opportunity.shortTitle}</h2>
+          <p className="lead">{opportunity.summary}</p>
+        </div>
+        <div className="action-row">
+          <Link href="/create">回到選需求</Link>
+          <Link href="/create/compare">進行 AI 預估比較</Link>
+        </div>
+      </section>
+
+      <section className="proposal-grid" aria-label="Campaign proposals">
+        {proposals.map((proposal) => (
+          <ProposalCard key={proposal.label} proposal={proposal} />
+        ))}
+      </section>
+    </PlatformShell>
+  );
+}
+
+export function ForecastComparePage() {
+  const opportunity = getFeaturedOpportunity();
+  const variants = getComparisonVariants(opportunity.id);
+  const rows = getForecastRows(opportunity.id);
+
+  return (
+    <PlatformShell
+      active="/create"
+      eyebrow="AI Forecast"
+      title="AI 預估比較"
+      description="Step 3：比較兩個方案在文案、活動力度、商品組合與預估成效上的差異，必要時回上一頁調整。"
+      showWorkflow
+      activeWorkflowStep="forecast"
+    >
+      <div className="forecast-layout">
+        <section className="module-card forecast-summary">
+          <div className="module-card-head">
+            <div>
+              <p className="eyebrow">Before Launch</p>
+              <h2>先預估，再決定要不要改</h2>
+            </div>
+            <Score value={86} label="建議分" />
+          </div>
+          <p className="lead">這頁的目的不是上線後 A/B test，而是上線前先用 AI 評估哪個方案更有機會打中顧客需求。使用者可以回到上一頁修改文案或贈獎，再重新比較。</p>
+          <div className="action-row">
+            <Link href="/create/options">回去編輯方案</Link>
+            <Link href="/create/generate">用 B 產生語法</Link>
+          </div>
+        </section>
+
+        <section className="forecast-variant-grid" id="select-option">
+          {variants.map((variant) => (
+            <article className="module-card" key={variant.label}>
+              <span className="variant-label">{variant.label}</span>
+              <h2>{variant.name}</h2>
+              <p className="lead">{variant.pageAngle}</p>
+              <div className="metric-strip">
+                <Metric label="CTR" value={`+${variant.projectedCtrLift}%`} />
+                <Metric label="CVR" value={`+${variant.projectedCvrLift}%`} />
+                <Metric label="CRM" value={variant.crmValue} />
+                <Metric label="難度" value={variant.executionEffort} />
+              </div>
+              <strong className="forecast-callout">{variant.recommendation}</strong>
+            </article>
+          ))}
+        </section>
+
+        <section className="module-card analysis-panel">
+          <p className="eyebrow">Analysis Matrix</p>
+          <h2>比較項目</h2>
+          <div className="analysis-grid">
+            {rows.map((row) => (
+              <article key={row.metric}>
+                <header>
+                  <strong>{row.metric}</strong>
+                  <span>{row.winner === "Tie" ? "持平" : `${row.winner} 勝`}</span>
+                </header>
+                <div>
+                  <p>A：{row.variantA}</p>
+                  <p>B：{row.variantB}</p>
+                </div>
+                <small>{row.insight}</small>
+              </article>
+            ))}
+          </div>
+        </section>
+      </div>
+    </PlatformShell>
+  );
+}
+
+export function GenerateSyntaxPage() {
+  const campaignExport = getCmsExportPackage("campaign");
+
+  return (
+    <PlatformShell
+      active="/create"
+      eyebrow="Generate Code"
+      title="產生 CMS 語法"
+      description="Step 4：把選定方案轉成 CMS 可貼上的 HTML、CSS、JS 與追蹤資料。"
+      showWorkflow
+      activeWorkflowStep="generate-code"
+    >
+      <div className="builder-layout">
+        <section className="module-card generate-checklist">
+          <p className="eyebrow">Ready To CMS</p>
+          <h2>輸出前檢查</h2>
+          <div className="task-list">
+            <article>
+              <strong>方案</strong>
+              <span>租屋免安裝情境版已選定為主推頁。</span>
+            </article>
+            <article>
+              <strong>素材</strong>
+              <span>需要 hero、三步驟方案、商品組合與贈獎模組。</span>
+            </article>
+            <article>
+              <strong>追蹤</strong>
+              <span>保留 hero CTA、商品點擊、贈獎點擊與會員券領取事件。</span>
+            </article>
+          </div>
+          <div className="action-row">
+            <Link href="/create/compare">回到比較</Link>
+            <Link href="/export">查看完整 CMS 匯出</Link>
+          </div>
+        </section>
+        <CodeBlock title="Campaign HTML" value={campaignExport.html} />
       </div>
     </PlatformShell>
   );
@@ -496,6 +651,87 @@ export function FeedbackPage() {
         ))}
       </div>
     </PlatformShell>
+  );
+}
+
+function SavedProjectsTable({ projects }: { projects: SavedCampaignProject[] }) {
+  return (
+    <section className="module-card saved-projects-panel">
+      <div className="module-card-head">
+        <div>
+          <p className="eyebrow">Saved Campaigns</p>
+          <h2>目前儲存的策展案</h2>
+          <p className="lead">工作台只顯示已存在的案子；要開新案，從左側「建立策展案」進入完整流程。</p>
+        </div>
+        <Score value={projects.length} label="案子" />
+      </div>
+      <div className="saved-project-list">
+        {projects.map((project) => (
+          <Link href={project.stage === "AI 預估比較" ? "/create/compare" : "/create/options"} key={project.id}>
+            <div>
+              <strong>{project.title}</strong>
+              <span>{project.demand}</span>
+            </div>
+            <Metric label="階段" value={project.stage} />
+            <Metric label="推薦分" value={project.score} />
+            <div className="project-next">
+              <small>{project.updatedAt} / {project.owner}</small>
+              <b>{project.nextAction}</b>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ProposalCard({ proposal }: { proposal: CampaignProposal }) {
+  return (
+    <article className="module-card proposal-card">
+      <div className="module-card-head">
+        <div>
+          <span className="variant-label">{proposal.label}</span>
+          <h2>{proposal.name}</h2>
+          <p className="lead">{proposal.campaignClaim}</p>
+        </div>
+        <Score value={proposal.label === "B" ? 86 : 62} label="預估" />
+      </div>
+
+      <div className="proposal-field-grid">
+        <ProposalField label="頁型" value={proposal.campaignType} />
+        <ProposalField label="目標客群" value={proposal.targetAudience} />
+        <ProposalField label="商品組合" value={proposal.productBundle} editable />
+        <ProposalField label="文案方向" value={proposal.copyDirection} editable />
+        <ProposalField label="贈獎力度" value={proposal.rewardIntensity} editable />
+        <ProposalField label="渠道" value={proposal.channelPlan} editable />
+        <ProposalField label="預估成效" value={proposal.expectedImpact} />
+        <ProposalField label="成本 / 難度" value={`毛利壓力 ${proposal.marginPressure}，執行難度 ${proposal.executionEffort}`} />
+      </div>
+
+      <div className="proposal-reasoning">
+        <strong>AI 產生理由</strong>
+        {proposal.reasoning.map((reason) => (
+          <p key={reason}>{reason}</p>
+        ))}
+      </div>
+
+      <div className="edit-chip-row" aria-label="Editable fields">
+        {proposal.editableFields.map((field) => (
+          <button key={field} type="button">
+            編輯{field}
+          </button>
+        ))}
+      </div>
+    </article>
+  );
+}
+
+function ProposalField({ label, value, editable = false }: { label: string; value: string; editable?: boolean }) {
+  return (
+    <div className={editable ? "editable" : ""}>
+      <small>{label}</small>
+      <p>{value}</p>
+    </div>
   );
 }
 

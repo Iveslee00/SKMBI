@@ -2155,7 +2155,7 @@ pre {
 }
 
 .create-step-layout {
-  grid-template-columns: 220px minmax(560px, 1.25fr) minmax(380px, 0.9fr);
+  grid-template-columns: 210px minmax(0, 1.25fr) minmax(320px, 0.9fr);
   gap: 16px;
 }
 
@@ -2229,7 +2229,7 @@ pre {
 }
 
 .choice-meta {
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  grid-template-columns: repeat(4, minmax(96px, 1fr));
 }
 
 .demand-choice-list .action-row {
@@ -2633,6 +2633,16 @@ pre {
 
   .workspace {
     max-width: none;
+  }
+}
+
+@media (min-width: 1281px) and (max-width: 1500px) {
+  .create-step-layout {
+    grid-template-columns: 210px minmax(0, 1fr);
+  }
+
+  .selected-topic-panel {
+    grid-column: 2;
   }
 }
 

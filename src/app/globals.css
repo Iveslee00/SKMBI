@@ -2625,7 +2625,6 @@ pre {
 }
 
 @media (max-width: 1280px) {
-  .create-step-layout,
   .saved-project-list a,
   .analysis-grid article {
     grid-template-columns: 1fr;
@@ -2636,13 +2635,39 @@ pre {
   }
 }
 
-@media (min-width: 1281px) and (max-width: 1500px) {
+@media (min-width: 901px) and (max-width: 1280px) {
   .create-step-layout {
-    grid-template-columns: 210px minmax(0, 1fr);
+    grid-template-columns: minmax(180px, 0.32fr) minmax(0, 1fr);
+  }
+
+  .filter-rail,
+  .opportunity-rank-panel,
+  .selected-topic-panel {
+    min-width: 0;
   }
 
   .selected-topic-panel {
-    grid-column: 2;
+    grid-column: 1 / -1;
+  }
+
+  .choice-meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1281px) and (max-width: 1500px) {
+  .create-step-layout {
+    grid-template-columns: 180px minmax(0, 1fr) minmax(280px, 0.72fr);
+  }
+
+  .filter-rail,
+  .opportunity-rank-panel,
+  .selected-topic-panel {
+    min-width: 0;
+  }
+
+  .selected-topic-panel .metric-strip {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -2655,9 +2680,14 @@ pre {
   .forecast-variant-grid,
   .forecast-chart-row,
   .selection-grid,
+  .create-step-layout,
   .proposal-field-grid,
   .choice-meta {
     grid-template-columns: 1fr;
+  }
+
+  .selected-topic-panel {
+    grid-column: auto;
   }
 
   .app-shell {
